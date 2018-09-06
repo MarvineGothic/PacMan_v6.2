@@ -13,8 +13,8 @@ import java.util.List;
 
 import static pacman.entries.pacman.Utils.*;
 
-@SuppressWarnings("all")
-public class SuperPacMan extends Controller<MOVE> {
+
+public class SuperPacMan2 extends Controller<MOVE> {
     private static final int MIN_DISTANCE = 40;    //if a ghost is this close, run away
     private static final double PILLS_THRESHOLD = 20.0;
     private List<Integer[]> safePathsList = new ArrayList<>();
@@ -45,7 +45,9 @@ public class SuperPacMan extends Controller<MOVE> {
 
         int closestPill;
 
+
         List<int[]> safePaths = getSafeDistancePaths(50, game, pacManIdx);
+        // GameView.addPoints(game, Color.BLUE, safePills);
 
 
         //Strategy 1: if any non-edible ghost is too close (less than MIN_DISTANCE), run away
@@ -68,7 +70,7 @@ public class SuperPacMan extends Controller<MOVE> {
                         return game.getNextMoveTowardsTarget(pacManIdx, closestPill, DM.PATH);
                     }
                     // if there's a safe way to Power and pills are less than 60%
-                    else if (safePathToPower != null) {
+                    /*else if (safePathToPower != null) {
                         int closestPower = targetIndexFromPath(safePathToPower);
                         GameView.addPoints(game, Color.ORANGE, game.getShortestPath(pacManIdx, closestPower));
                         return game.getNextMoveTowardsTarget(pacManIdx, closestPower, DM.PATH);
@@ -86,7 +88,7 @@ public class SuperPacMan extends Controller<MOVE> {
                         }
                         GameView.addPoints(game, Color.RED, safeJunctions);
                         return game.getNextMoveTowardsTarget(pacManIdx, closestJunction, DM.PATH);
-                    }
+                    }*/
             }
 
 
@@ -102,7 +104,7 @@ public class SuperPacMan extends Controller<MOVE> {
             }
             GameView.addPoints(game, Color.GREEN, game.getShortestPath(pacManIdx, closestPill));
             return game.getNextMoveTowardsTarget(pacManIdx, closestPill, DM.PATH);
-        } else if (!safePaths.isEmpty()) {
+        } /*else if (!safePaths.isEmpty()) {
             closestPill = game.getClosestNodeIndexFromNodeIndex(pacManIdx, safePaths.get(0), DM.PATH);
             GameView.addPoints(game, Color.CYAN, game.getShortestPath(pacManIdx, closestPill));
             return game.getNextMoveTowardsTarget(pacManIdx, closestPill, DM.PATH);
@@ -110,7 +112,7 @@ public class SuperPacMan extends Controller<MOVE> {
             int closestPower = targetIndexFromPath(safePathToPower);
             GameView.addPoints(game, Color.ORANGE, game.getShortestPath(pacManIdx, closestPower));
             return game.getNextMoveTowardsTarget(pacManIdx, closestPower, DM.PATH);
-        }
+        }*/
         //return the next direction once the closest target has been identified
         return MOVE.LEFT;
     }

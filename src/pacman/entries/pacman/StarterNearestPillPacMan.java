@@ -37,14 +37,14 @@ public class StarterNearestPillPacMan extends Controller<MOVE> {
         int[] pillsIdxs = game.getActivePillsIndices();
 
         int closestTargetIndex;
-        List<int[]> safePaths = safePaths(50, game, pacManIdx);
+        List<int[]> safePaths = getSafeDistancePaths(50, game, pacManIdx);
 
         //Strategy 1: if any non-edible ghost is too close (less than MIN_DISTANCE), run away
         for (Constants.GHOST ghost : Constants.GHOST.values()) {
             if (isGhostDangerous(game, ghost)) {
 
-                int[] safePathToPower = shortestSafePath(game, pacManIdx, powerIdxs);
-                int[] safePathToPill = shortestSafePath(game, pacManIdx, pillsIdxs);
+                int[] safePathToPower = getShortestSafePath(game, pacManIdx, powerIdxs);
+                int[] safePathToPill = getShortestSafePath(game, pacManIdx, pillsIdxs);
 
                 int closestGhostIndex = game.getGhostCurrentNodeIndex(ghost);
                 int nearestGhostDist = game.getShortestPathDistance(pacManIdx, closestGhostIndex);
@@ -104,7 +104,7 @@ public class StarterNearestPillPacMan extends Controller<MOVE> {
         // need to chose closest safest point:
         int[] nearestTargets = pillsIdxs;
         closestTargetIndex = game.getClosestNodeIndexFromNodeIndex(pacManIdx, nearestTargets, DM.PATH);
-        /*int[] nearestTargetPath = shortestSafePath(game, pacManIdx, nearestTargets);
+        /*int[] nearestTargetPath = getShortestSafePath(game, pacManIdx, nearestTargets);
         if (nearestTargetPath != null)
             closestTargetIndex = targetIndexFromPath(nearestTargetPath);*/
 
@@ -119,7 +119,7 @@ public class StarterNearestPillPacMan extends Controller<MOVE> {
         }
 
 
-        int[] shortestSafePath = shortestSafePath(game, pacManIdx, nearestTargets);
+        int[] shortestSafePath = getShortestSafePath(game, pacManIdx, nearestTargets);
         if (shortestSafePath != null) closestTargetIndex = targetIndexFromPath(shortestSafePath);
 
         GameView.addPoints(game, Color.GREEN, game.getShortestPath(pacManIdx, closestTargetIndex));
