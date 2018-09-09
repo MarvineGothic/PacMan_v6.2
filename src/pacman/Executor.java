@@ -3,7 +3,9 @@ package pacman;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanController;
 import pacman.controllers.examples.Legacy2TheReckoning;
-import pacman.entries.pacman.SuperPacMan;
+import pacman.entries.BT.*;
+import pacman.entries.BT.Composite.BTSelector;
+import pacman.entries.BT.Composite.BTSequence;
 import pacman.game.Game;
 import pacman.game.GameView;
 
@@ -32,6 +34,28 @@ public class Executor {
     public static void main(String[] args) {
         Executor exec = new Executor();
 
+        BTSequence peaceMode_sequence = new CollectPills_Sequence();
+        BTSelector peaceMode_selector = new PeaceMode();
+        // collect Pills
+        BTSequence collectPills_sequence = new CollectPills_Sequence();
+        collectPills_sequence.children.add(new GetClosestPill());
+        collectPills_sequence.children.add(new MoveToDestination());
+        // collect Power
+        BTSequence collectPower_sequence = new CollectPower_Sequence();
+        collectPower_sequence.children.add(new GetClosestPower());
+        collectPower_sequence.children.add(new MoveToDestination());
+
+        // any possible way
+        BTSequence possibleWay_sequence = new PossibleWay_Sequence();
+        possibleWay_sequence.children.add(new GetAnyPossibleWay());
+
+
+        // add sequences to the selector
+        peaceMode_selector.children.add(collectPills_sequence);
+        peaceMode_selector.children.add(collectPower_sequence);
+        peaceMode_selector.children.add(possibleWay_sequence);
+
+
         //run multiple games in batch mode - good for testing.
         int numTrials = 10;
         //exec.runExperiment(new RandomPacMan(), new RandomGhosts(), numTrials);
@@ -44,8 +68,11 @@ public class Executor {
         ///*
         //run the game in asynchronous mode.
         visual = true;
-        exec.runGameTimed(new SuperPacMan(), new Legacy2TheReckoning(), visual);
-        //exec.runGameTimed(new HumanController(new KeyBoardInput()), new Legacy2TheReckoning(), visual);
+        String fileName = "replay.txt";
+        //exec.replayGame("19970.txt", visual);
+        // exec.runGameTimedRecorded(new SuperPacMan(), new Legacy2TheReckoning(), visual, fileName);
+        exec.runGameTimedRecorded(peaceMode_selector, new Legacy2TheReckoning(), visual, fileName);
+        //exec.runGameTimed(new HumanController(new KeyBoardInput()), new Legacy2TheReckoning(), visual, 0);
         //exec.runGameTimed(new NearestPillPacManVS(), new AggressiveGhosts(), visual);
         //exec.runGameTimed(new StarterPacMan(), new StarterGhosts(), visual);
         //exec.runGameTimed(new HumanController(new KeyBoardInput()), new AggressiveGhosts(), visual);
@@ -172,8 +199,8 @@ public class Executor {
      * @param ghostController  The Ghosts controller
      * @param visual           Indicates whether or not to use visuals
      */
-    public void runGameTimed(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean visual) {
-        Game game = new Game(0);
+    public void runGameTimed(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean visual, int level) {
+        Game game = new Game(0, level);
 
         GameView gv = null;
 

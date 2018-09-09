@@ -2,13 +2,14 @@ package pacman.controllers;
 
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
+import pacman.game.GameView;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.List;
 
-import static pacman.entries.pacman.Utils.getAllSafeJunctionPaths;
-
+import static pacman.entries.pacman.Utils.getAllIndices;
+import static pacman.entries.pacman.Utils.getSafeIndices;
+import static pacman.entries.pacman.Utils.getShortestSafePath;
 /*
  * Allows a human player to play the game using the arrow key of the keyboard.
  */
@@ -24,7 +25,19 @@ public class HumanController extends Controller<MOVE> {
     }
 
     public MOVE getMove(Game game, long dueTime) {
+        int pacManIdx = game.getPacmanCurrentNodeIndex();
+
         int[] junctions = game.getJunctionIndices();
+
+        int[] pillsIdxs = game.getActivePillsIndices();
+        int[] allIdxs = getSafeIndices(game, getAllIndices(game),false);
+        int[] safePills = getSafeIndices(game, pillsIdxs,false);
+        int[] safePath = getShortestSafePath(game, pacManIdx, safePills,false);
+
+        if (allIdxs.length > 0 && safePath != null && safePath.length > 0) {
+            GameView.addPoints(game, Color.BLUE, allIdxs);
+            GameView.addPoints(game, Color.GREEN, safePath);
+        }
 
         switch (input.getKey()) {
             case KeyEvent.VK_UP:

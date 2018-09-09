@@ -59,10 +59,10 @@ public final class NearestPillPacManVS extends Controller<MOVE> {
 
 
         //add the path AND ghost path from Ghost 0 to the first power pill (to illustrate the differences)
-        if (game.getGhostLairTime(GHOST.BLINKY) == 0 && activePowerPills.length > 0) {
+        /*if (game.getGhostLairTime(GHOST.BLINKY) == 0 && activePowerPills.length > 0) {
             GameView.addPoints(game, Color.RED, game.getShortestPath(game.getGhostCurrentNodeIndex(GHOST.BLINKY), activePowerPills[0], MOVE.NEUTRAL));
             GameView.addPoints(game, Color.YELLOW, game.getShortestPath(game.getGhostCurrentNodeIndex(GHOST.BLINKY), activePowerPills[0], game.getGhostLastMoveMade(GHOST.BLINKY)));
-        }
+        }*/
 
         //add the path from Ghost 0 to the closest power pill
 //		if(game.getGhostLairTime(GHOST.BLINKY)==0 && activePowerPills.length>0)

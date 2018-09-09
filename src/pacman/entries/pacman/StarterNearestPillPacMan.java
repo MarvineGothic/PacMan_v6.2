@@ -37,14 +37,14 @@ public class StarterNearestPillPacMan extends Controller<MOVE> {
         int[] pillsIdxs = game.getActivePillsIndices();
 
         int closestTargetIndex;
-        List<int[]> safePaths = getSafeDistancePaths(50, game, pacManIdx);
+        List<int[]> safePaths = getSafeDistancePaths(50, game, pacManIdx,false);
 
         //Strategy 1: if any non-edible ghost is too close (less than MIN_DISTANCE), run away
         for (Constants.GHOST ghost : Constants.GHOST.values()) {
             if (isGhostDangerous(game, ghost)) {
 
-                int[] safePathToPower = getShortestSafePath(game, pacManIdx, powerIdxs);
-                int[] safePathToPill = getShortestSafePath(game, pacManIdx, pillsIdxs);
+                int[] safePathToPower = getShortestSafePath(game, pacManIdx, powerIdxs,false);
+                int[] safePathToPill = getShortestSafePath(game, pacManIdx, pillsIdxs,false);
 
                 int closestGhostIndex = game.getGhostCurrentNodeIndex(ghost);
                 int nearestGhostDist = game.getShortestPathDistance(pacManIdx, closestGhostIndex);
@@ -119,7 +119,7 @@ public class StarterNearestPillPacMan extends Controller<MOVE> {
         }
 
 
-        int[] shortestSafePath = getShortestSafePath(game, pacManIdx, nearestTargets);
+        int[] shortestSafePath = getShortestSafePath(game, pacManIdx, nearestTargets,false);
         if (shortestSafePath != null) closestTargetIndex = targetIndexFromPath(shortestSafePath);
 
         GameView.addPoints(game, Color.GREEN, game.getShortestPath(pacManIdx, closestTargetIndex));

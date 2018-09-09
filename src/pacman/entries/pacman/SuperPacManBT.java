@@ -14,7 +14,7 @@ import java.util.List;
 import static pacman.entries.pacman.Utils.*;
 
 @SuppressWarnings("all")
-public class SuperPacMan extends Controller<MOVE> {
+public class SuperPacManBT extends Controller<MOVE> {
     private static final int MIN_DISTANCE = 30;    //if a ghost is this close, run away
     private static int PILLS_THRESHOLD;
 
@@ -76,8 +76,8 @@ public class SuperPacMan extends Controller<MOVE> {
 
         GameView.addPoints(game, Color.BLUE, safePills);
 
-
         List<int[]> safePaths = getSafeDistancePaths(50, game, pacManIdx, false);
+
 
 
         //Strategy 1: if any non-edible ghost is too close (less than MIN_DISTANCE), run away
@@ -140,8 +140,11 @@ public class SuperPacMan extends Controller<MOVE> {
         GHOST minGhost = null;
         if ((minGhost = getClosestEdibleGhost(game)) != null) {    //we found an edible ghost
             int minGhostIndex = game.getGhostCurrentNodeIndex(minGhost);
-
-            if (pillsPerCent > 30)
+            if (isPill(game, minGhostIndex)) {
+                GameView.addPoints(game, Color.GRAY, game.getShortestPath(pacManIdx, minGhostIndex));
+                return game.getNextMoveTowardsTarget(pacManIdx, minGhostIndex, DM.PATH);
+            }
+            if (pillsPerCent > 20)
                 targets.add(minGhostIndex);
             else {
                 GameView.addPoints(game, Color.GRAY, game.getShortestPath(pacManIdx, minGhostIndex));
