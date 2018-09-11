@@ -1,11 +1,10 @@
 package pacman.entries.BT.Decorator;
 
 import pacman.entries.BT.Archetypes.Decorator;
-import pacman.entries.BT.utils.Status;
-import pacman.game.Constants;
-import pacman.game.Game;
+import pacman.entries.BT.TreeBuilder;
 
 public class BTInvertor extends Decorator {
+
     @Override
     public void init() {
 
@@ -17,17 +16,17 @@ public class BTInvertor extends Decorator {
     }
 
     @Override
-    public boolean checkConditions() {
+    public boolean successConditions() {
+        return false;
+    }
+
+    @Override
+    public boolean runningConditions() {
         return false;
     }
 
     @Override
     public void doAction() {
 
-    }
-
-    @Override
-    public Constants.MOVE getMove(Game game, long timeDue) {
-        return null;
     }
 }

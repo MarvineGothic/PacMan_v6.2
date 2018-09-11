@@ -5,8 +5,8 @@ import pacman.game.Constants.MOVE;
 import java.util.EnumMap;
 
 /*
- * The class is a data structure used to represent a node in the graph. Each maze is a set of connected nodes and
- * each node has some adjacent nodes that correspond to the enumeration MOVE. Each node stores all the information
+ * The class is a data structure used to represent a root in the graph. Each maze is a set of connected nodes and
+ * each root has some adjacent nodes that correspond to the enumeration MOVE. Each root stores all the information
  * required to check and update the current state of the game.
  */
 public final class Node {
@@ -17,7 +17,7 @@ public final class Node {
     public EnumMap<MOVE, EnumMap<MOVE, Integer>> allNeighbourhoods = new EnumMap<MOVE, EnumMap<MOVE, Integer>>(MOVE.class);
 
     /*
-     * Instantiates a new node.
+     * Instantiates a new root.
      */
     public Node(int nodeIndex, int x, int y, int pillIndex, int powerPillIndex, int[] _neighbourhood) {
         this.nodeIndex = nodeIndex;
@@ -57,7 +57,7 @@ public final class Node {
 
         for (int i = 0; i < moves.length; i++)//check all moves
         {
-            if (neighbourhood.containsKey(moves[i].opposite()))//move is part of neighbourhood
+            if (neighbourhood.containsKey(moves[i].opposite()))//currentMove is part of neighbourhood
             {
                 int[] tmpNeighbouringNodes = new int[numNeighbouringNodes - 1];
                 MOVE[] tmpPossibleMoves = new MOVE[numNeighbouringNodes - 1];

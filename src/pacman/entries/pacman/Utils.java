@@ -301,7 +301,7 @@ public class Utils {
     }
 
     /**
-     * Returns a possible move towards a junction if the path is safe
+     * Returns a possible currentMove towards a junction if the path is safe
      *
      * @param game
      * @param lastMove
@@ -317,13 +317,12 @@ public class Utils {
 
         /*if (possibleMoves.length == 1) return possibleMoves[0];
         else*/
-            if (possibleMoves.length > 1) {
+        if (possibleMoves.length > 1) {
 
             for (int i = 0; i < possibleMoves.length; i++) {
                 path = getPathToJunction(game, currentIndex, possibleMoves[i]);
                 if (isPathSafe(path, game, ghostLastMove)) {
                     int target = targetIndexFromPath(path);
-                    System.out.println(target);
                     return game.getNextMoveTowardsTarget(currentIndex, target, Constants.DM.PATH);
                 }
             }
@@ -410,6 +409,7 @@ public class Utils {
      * @return
      */
     public static boolean isPathSafe(int[] path, Game game, boolean ghostLastMove) {
+        if (path == null) return false;
         for (int i = 0; i < path.length; i++) {
             int nodeIdx = path[i];
             if (!isIndexSafe(game, nodeIdx, ghostLastMove))

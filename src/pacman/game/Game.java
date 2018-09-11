@@ -19,12 +19,12 @@ import static pacman.game.Constants.*;
  * the competition) and to create copies. Care has been taken to implement the game efficiently to ensure
  * that copies can be created quickly.
  * <p>
- * The game has a central update method called advanceGame which takes a move for Ms Pac-Man and up to
+ * The game has a central update method called advanceGame which takes a currentMove for Ms Pac-Man and up to
  * 4 moves for the ghosts. It then updates the positions of all characters, check whether pills or power
  * pills have been eaten and updates the game state accordingly.
  * <p>
  * All other methods are to access the gamestate and to compute numerous aspects such as directions to taken
- * given a target or a shortest path from a to b. All shortest path distances from any node to any other node
+ * given a target or a shortest path from a to b. All shortest path distances from any root to any other root
  * are pre-computed and loaded from file. This makes these methods more efficient. Note about the ghosts: ghosts
  * are not allowed to reverse. Hence it is not possible to simply look up the shortest path distance. Instead,
  * one can approximate this greedily or use A* to compute it properly. The former is somewhat quicker and has
@@ -325,7 +325,7 @@ public final class Game {
      * the controllers. It first updates Ms Pac-Man, then the ghosts and then
      * the general game logic.
      *
-     * @param pacManMove The move supplied by the Ms Pac-Man controller
+     * @param pacManMove The currentMove supplied by the Ms Pac-Man controller
      * @param ghostMoves The moves supplied by the ghosts controller
      */
     public void advanceGame(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
@@ -358,12 +358,12 @@ public final class Game {
     }
 
     /**
-     * Updates the state of Ms Pac-Man given the move returned by the controller.
+     * Updates the state of Ms Pac-Man given the currentMove returned by the controller.
      *
-     * @param pacManMove The move supplied by the Ms Pac-Man controller
+     * @param pacManMove The currentMove supplied by the Ms Pac-Man controller
      */
     public void updatePacMan(MOVE pacManMove) {
-        _updatePacMan(pacManMove);                    //move pac-man
+        _updatePacMan(pacManMove);                    //currentMove pac-man
         _eatPill();                                    //eat a pill
         _eatPowerPill();                            //eat a power pill
     }
@@ -451,7 +451,7 @@ public final class Game {
     /**
      * _update pac man.
      *
-     * @param move the move
+     * @param move the currentMove
      */
     private void _updatePacMan(MOVE move) {
         pacman.lastMoveMade = _correctPacManDir(move);
@@ -524,7 +524,7 @@ public final class Game {
      * @return the mOVE
      */
     private MOVE _checkGhostDir(Ghost ghost, MOVE direction) {
-        //Gets the neighbours of the node with the node that would correspond to reverse removed
+        //Gets the neighbours of the root with the root that would correspond to reverse removed
         Node node = currentMaze.graph[ghost.currentNodeIndex];
 
         //The direction is possible and not opposite to the previous direction of that ghost
@@ -739,20 +739,20 @@ public final class Game {
     }
 
     /**
-     * Returns the x coordinate of the specified node.
+     * Returns the x coordinate of the specified root.
      *
-     * @param nodeIndex the node index
-     * @return the node x cood
+     * @param nodeIndex the root index
+     * @return the root x cood
      */
     public int getNodeXCood(int nodeIndex) {
         return currentMaze.graph[nodeIndex].x;
     }
 
     /**
-     * Returns the y coordinate of the specified node.
+     * Returns the y coordinate of the specified root.
      *
-     * @param nodeIndex The node index
-     * @return The node's y coordinate
+     * @param nodeIndex The root index
+     * @return The root's y coordinate
      */
     public int getNodeYCood(int nodeIndex) {
         return currentMaze.graph[nodeIndex].y;
@@ -795,10 +795,10 @@ public final class Game {
     }
 
     /**
-     * Returns the node index where ghosts start in the maze once leaving
+     * Returns the root index where ghosts start in the maze once leaving
      * the lair.
      *
-     * @return the node index where ghosts start after leaving the lair.
+     * @return the root index where ghosts start after leaving the lair.
      */
     public int getGhostInitialNodeIndex() {
         return currentMaze.initialGhostNodeIndex;
@@ -825,29 +825,29 @@ public final class Game {
     }
 
     /**
-     * Returns the pill index of the node specified. This can be -1 if there
-     * is no pill at the specified node.
+     * Returns the pill index of the root specified. This can be -1 if there
+     * is no pill at the specified root.
      *
-     * @param nodeIndex The Index of the node.
-     * @return a number corresponding to the pill index (or -1 if node has no pill)
+     * @param nodeIndex The Index of the root.
+     * @return a number corresponding to the pill index (or -1 if root has no pill)
      */
     public int getPillIndex(int nodeIndex) {
         return currentMaze.graph[nodeIndex].pillIndex;
     }
 
     /**
-     * Returns the power pill index of the node specified. This can be -1 if there
-     * is no power pill at the specified node.
+     * Returns the power pill index of the root specified. This can be -1 if there
+     * is no power pill at the specified root.
      *
-     * @param nodeIndex The Index of the node.
-     * @return a number corresponding to the power pill index (or -1 if node has no pill)
+     * @param nodeIndex The Index of the root.
+     * @return a number corresponding to the power pill index (or -1 if root has no pill)
      */
     public int getPowerPillIndex(int nodeIndex) {
         return currentMaze.graph[nodeIndex].powerPillIndex;
     }
 
     /**
-     * Returns the array of node indices that are junctions (3 or more neighbours).
+     * Returns the array of root indices that are junctions (3 or more neighbours).
      *
      * @return the junction indices
      */
@@ -874,18 +874,18 @@ public final class Game {
     }
 
     /**
-     * Current node index of Ms Pac-Man.
+     * Current root index of Ms Pac-Man.
      *
-     * @return the pacman current node index
+     * @return the pacman current root index
      */
     public int getPacmanCurrentNodeIndex() {
         return pacman.currentNodeIndex;
     }
 
     /**
-     * Current node index of Ms Pac-Man.
+     * Current root index of Ms Pac-Man.
      *
-     * @return the pacman last move made
+     * @return the pacman last currentMove made
      */
     public MOVE getPacmanLastMoveMade() {
         return pacman.lastMoveMade;
@@ -901,10 +901,10 @@ public final class Game {
     }
 
     /**
-     * Current node at which the specified ghost resides.
+     * Current root at which the specified ghost resides.
      *
      * @param ghostType the ghost type
-     * @return the ghost current node index
+     * @return the ghost current root index
      */
     public int getGhostCurrentNodeIndex(GHOST ghostType) {
         return ghosts.get(ghostType).currentNodeIndex;
@@ -914,7 +914,7 @@ public final class Game {
      * Current direction of the specified ghost.
      *
      * @param ghostType the ghost type
-     * @return the ghost last move made
+     * @return the ghost last currentMove made
      */
     public MOVE getGhostLastMoveMade(GHOST ghostType) {
         return ghosts.get(ghostType).lastMoveMade;
@@ -1063,9 +1063,9 @@ public final class Game {
     }
 
     /**
-     * Checks if the node specified by the nodeIndex is a junction.
+     * Checks if the root specified by the nodeIndex is a junction.
      *
-     * @param nodeIndex the node index
+     * @param nodeIndex the root index
      * @return true, if is junction
      */
     public boolean isJunction(int nodeIndex) {
@@ -1073,9 +1073,9 @@ public final class Game {
     }
 
     /**
-     * Gets the possible moves from the node index specified.
+     * Gets the possible moves from the root index specified.
      *
-     * @param nodeIndex The current node index
+     * @param nodeIndex The current root index
      * @return The set of possible moves
      */
     public MOVE[] getPossibleMoves(int nodeIndex) {
@@ -1083,9 +1083,9 @@ public final class Game {
     }
 
     /**
-     * Gets the possible moves except the one that corresponds to the reverse of the move supplied.
+     * Gets the possible moves except the one that corresponds to the reverse of the currentMove supplied.
      *
-     * @param nodeIndex    The current node index
+     * @param nodeIndex    The current root index
      * @param lastModeMade The last mode made (possible moves will exclude the reverse)
      * @return The set of possible moves
      */
@@ -1094,9 +1094,9 @@ public final class Game {
     }
 
     /**
-     * Gets the neighbouring nodes from the current node index.
+     * Gets the neighbouring nodes from the current root index.
      *
-     * @param nodeIndex The current node index
+     * @param nodeIndex The current root index
      * @return The set of neighbouring nodes
      */
     public int[] getNeighbouringNodes(int nodeIndex) {
@@ -1104,24 +1104,24 @@ public final class Game {
     }
 
     /**
-     * Gets the neighbouring nodes from the current node index excluding the node
-     * that corresponds to the opposite of the last move made which is given as an argument.
+     * Gets the neighbouring nodes from the current root index excluding the root
+     * that corresponds to the opposite of the last currentMove made which is given as an argument.
      *
-     * @param nodeIndex    The current node index
+     * @param nodeIndex    The current root index
      * @param lastModeMade The last mode made
-     * @return The set of neighbouring nodes except the one that is opposite of the last move made
+     * @return The set of neighbouring nodes except the one that is opposite of the last currentMove made
      */
     public int[] getNeighbouringNodes(int nodeIndex, MOVE lastModeMade) {
         return currentMaze.graph[nodeIndex].allNeighbouringNodes.get(lastModeMade);
     }
 
     /**
-     * Given a node index and a move to be made, it returns the node index the move takes one to.
+     * Given a root index and a currentMove to be made, it returns the root index the currentMove takes one to.
      * If there is no neighbour in that direction, the method returns -1.
      *
-     * @param nodeIndex    The current node index
-     * @param moveToBeMade The move to be made
-     * @return The node index of the node the move takes one to
+     * @param nodeIndex    The current root index
+     * @param moveToBeMade The currentMove to be made
+     * @return The root index of the root the currentMove takes one to
      */
     public int getNeighbour(int nodeIndex, MOVE moveToBeMade) {
         Integer neighbour = currentMaze.graph[nodeIndex].neighbourhood.get(moveToBeMade);
@@ -1130,12 +1130,12 @@ public final class Game {
     }
 
     /**
-     * Method that returns the direction to take given a node index and an index of a neighbouring
-     * node. Returns null if the neighbour is invalid.
+     * Method that returns the direction to take given a root index and an index of a neighbouring
+     * root. Returns null if the neighbour is invalid.
      *
-     * @param currentNodeIndex   The current node index.
-     * @param neighbourNodeIndex The direct neighbour (node index) of the current node.
-     * @return the move to make to reach direct neighbour
+     * @param currentNodeIndex   The current root index.
+     * @param neighbourNodeIndex The direct neighbour (root index) of the current root.
+     * @return the currentMove to make to reach direct neighbour
      */
     public MOVE getMoveToMakeToReachDirectNeighbour(int currentNodeIndex, int neighbourNodeIndex) {
         for (MOVE move : MOVE.values()) {
@@ -1153,10 +1153,10 @@ public final class Game {
     /////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns the PATH distance from any node to any other node.
+     * Returns the PATH distance from any root to any other root.
      *
-     * @param fromNodeIndex the from node index
-     * @param toNodeIndex   the to node index
+     * @param fromNodeIndex the from root index
+     * @param toNodeIndex   the to root index
      * @return the shortest path distance
      */
     public int getShortestPathDistance(int fromNodeIndex, int toNodeIndex) {
@@ -1171,8 +1171,8 @@ public final class Game {
     /**
      * Returns the EUCLEDIAN distance between two nodes in the current mazes[gs.curMaze].
      *
-     * @param fromNodeIndex the from node index
-     * @param toNodeIndex   the to node index
+     * @param fromNodeIndex the from root index
+     * @param toNodeIndex   the to root index
      * @return the euclidean distance
      */
     public double getEuclideanDistance(int fromNodeIndex, int toNodeIndex) {
@@ -1182,8 +1182,8 @@ public final class Game {
     /**
      * Returns the MANHATTAN distance between two nodes in the current mazes[gs.curMaze].
      *
-     * @param fromNodeIndex the from node index
-     * @param toNodeIndex   the to node index
+     * @param fromNodeIndex the from root index
+     * @param toNodeIndex   the to root index
      * @return the manhattan distance
      */
     public int getManhattanDistance(int fromNodeIndex, int toNodeIndex) {
@@ -1193,8 +1193,8 @@ public final class Game {
     /**
      * Gets the distance.
      *
-     * @param fromNodeIndex   the from node index
-     * @param toNodeIndex     the to node index
+     * @param fromNodeIndex   the from root index
+     * @param toNodeIndex     the to root index
      * @param distanceMeasure the distance measure
      * @return the distance
      */
@@ -1214,9 +1214,9 @@ public final class Game {
     /**
      * Returns the distance between two nodes taking reversals into account.
      *
-     * @param fromNodeIndex   the index of the originating node
-     * @param toNodeIndex     the index of the target node
-     * @param lastMoveMade    the last move made
+     * @param fromNodeIndex   the index of the originating root
+     * @param toNodeIndex     the index of the target root
+     * @param lastMoveMade    the last currentMove made
      * @param distanceMeasure the distance measure to be used
      * @return the distance between two nodes.
      */
@@ -1234,12 +1234,12 @@ public final class Game {
     }
 
     /**
-     * Gets the closest node index from node index.
+     * Gets the closest root index from root index.
      *
-     * @param fromNodeIndex     the from node index
-     * @param targetNodeIndices the target node indices
+     * @param fromNodeIndex     the from root index
+     * @param targetNodeIndices the target root indices
      * @param distanceMeasure   the distance measure
-     * @return the closest node index from node index
+     * @return the closest root index from root index
      */
     public int getClosestNodeIndexFromNodeIndex(int fromNodeIndex, int[] targetNodeIndices, DM distanceMeasure) {
         double minDistance = Integer.MAX_VALUE;
@@ -1260,12 +1260,12 @@ public final class Game {
     }
 
     /**
-     * Gets the farthest node index from node index.
+     * Gets the farthest root index from root index.
      *
-     * @param fromNodeIndex     the from node index
-     * @param targetNodeIndices the target node indices
+     * @param fromNodeIndex     the from root index
+     * @param targetNodeIndices the target root indices
      * @param distanceMeasure   the distance measure
-     * @return the farthest node index from node index
+     * @return the farthest root index from root index
      */
     public int getFarthestNodeIndexFromNodeIndex(int fromNodeIndex, int[] targetNodeIndices, DM distanceMeasure) {
         double maxDistance = Integer.MIN_VALUE;
@@ -1286,12 +1286,12 @@ public final class Game {
     }
 
     /**
-     * Gets the next move towards target.
+     * Gets the next currentMove towards target.
      *
-     * @param fromNodeIndex   the from node index
-     * @param toNodeIndex     the to node index
+     * @param fromNodeIndex   the from root index
+     * @param toNodeIndex     the to root index
      * @param distanceMeasure the distance measure
-     * @return the next move towards target
+     * @return the next currentMove towards target
      */
     public MOVE getNextMoveTowardsTarget(int fromNodeIndex, int toNodeIndex, DM distanceMeasure) {
         MOVE move = null;
@@ -1311,12 +1311,12 @@ public final class Game {
     }
 
     /**
-     * Gets the next move away from target.
+     * Gets the next currentMove away from target.
      *
-     * @param fromNodeIndex   the from node index
-     * @param toNodeIndex     the to node index
+     * @param fromNodeIndex   the from root index
+     * @param toNodeIndex     the to root index
      * @param distanceMeasure the distance measure
-     * @return the next move away from target
+     * @return the next currentMove away from target
      */
     public MOVE getNextMoveAwayFromTarget(int fromNodeIndex, int toNodeIndex, DM distanceMeasure) {
         MOVE move = null;
@@ -1336,13 +1336,13 @@ public final class Game {
     }
 
     /**
-     * Gets the approximate next move towards target not considering directions opposing the last move made.
+     * Gets the approximate next currentMove towards target not considering directions opposing the last currentMove made.
      *
-     * @param fromNodeIndex   The node index from which to move (i.e., current position)
-     * @param toNodeIndex     The target node index
-     * @param lastMoveMade    The last move made
+     * @param fromNodeIndex   The root index from which to currentMove (i.e., current position)
+     * @param toNodeIndex     The target root index
+     * @param lastMoveMade    The last currentMove made
      * @param distanceMeasure The distance measure required (Manhattan, Euclidean or Straight line)
-     * @return The approximate next move towards target (chosen greedily)
+     * @return The approximate next currentMove towards target (chosen greedily)
      */
     public MOVE getApproximateNextMoveTowardsTarget(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade, DM distanceMeasure) {
         MOVE move = null;
@@ -1362,13 +1362,13 @@ public final class Game {
     }
 
     /**
-     * Gets the approximate next move away from a target not considering directions opposing the last move made.
+     * Gets the approximate next currentMove away from a target not considering directions opposing the last currentMove made.
      *
-     * @param fromNodeIndex   The node index from which to move (i.e., current position)
-     * @param toNodeIndex     The target node index
-     * @param lastMoveMade    The last move made
+     * @param fromNodeIndex   The root index from which to currentMove (i.e., current position)
+     * @param toNodeIndex     The target root index
+     * @param lastMoveMade    The last currentMove made
      * @param distanceMeasure The distance measure required (Manhattan, Euclidean or Straight line)
-     * @return The approximate next move towards target (chosen greedily)
+     * @return The approximate next currentMove towards target (chosen greedily)
      */
     public MOVE getApproximateNextMoveAwayFromTarget(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade, DM distanceMeasure) {
         MOVE move = null;
@@ -1388,13 +1388,13 @@ public final class Game {
     }
 
     /**
-     * Gets the exact next move towards target taking into account reversals. This uses the pre-computed paths.
+     * Gets the exact next currentMove towards target taking into account reversals. This uses the pre-computed paths.
      *
-     * @param fromNodeIndex   The node index from which to move (i.e., current position)
-     * @param toNodeIndex     The target node index
-     * @param lastMoveMade    The last move made
+     * @param fromNodeIndex   The root index from which to currentMove (i.e., current position)
+     * @param toNodeIndex     The target root index
+     * @param lastMoveMade    The last currentMove made
      * @param distanceMeasure the distance measure to be used
-     * @return the next move towards target
+     * @return the next currentMove towards target
      */
     public MOVE getNextMoveTowardsTarget(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade, DM distanceMeasure) {
         MOVE move = null;
@@ -1414,13 +1414,13 @@ public final class Game {
     }
 
     /**
-     * Gets the exact next move away from target taking into account reversals. This uses the pre-computed paths.
+     * Gets the exact next currentMove away from target taking into account reversals. This uses the pre-computed paths.
      *
-     * @param fromNodeIndex   The node index from which to move (i.e., current position)
-     * @param toNodeIndex     The target node index
-     * @param lastMoveMade    The last move made
+     * @param fromNodeIndex   The root index from which to currentMove (i.e., current position)
+     * @param toNodeIndex     The target root index
+     * @param lastMoveMade    The last currentMove made
      * @param distanceMeasure the distance measure to be used
-     * @return the next move away from target
+     * @return the next currentMove away from target
      */
     public MOVE getNextMoveAwayFromTarget(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade, DM distanceMeasure) {
         MOVE move = null;
@@ -1442,9 +1442,9 @@ public final class Game {
     /**
      * Gets the A* path considering previous moves made (i.e., opposing actions are ignored)
      *
-     * @param fromNodeIndex The node index from which to move (i.e., current position)
-     * @param toNodeIndex   The target node index
-     * @param lastMoveMade  The last move made
+     * @param fromNodeIndex The root index from which to currentMove (i.e., current position)
+     * @param toNodeIndex   The target root index
+     * @param lastMoveMade  The last currentMove made
      * @return The A* path
      * @deprecated use getShortestPath() instead.
      *//*
@@ -1454,10 +1454,10 @@ public final class Game {
     }*/
 
     /**
-     * Gets the shortest path from node A to node B as specified by their indices.
+     * Gets the shortest path from root A to root B as specified by their indices.
      *
-     * @param fromNodeIndex The node index from where to start (i.e., current position)
-     * @param toNodeIndex   The target node index
+     * @param fromNodeIndex The root index from where to start (i.e., current position)
+     * @param toNodeIndex   The target root index
      * @return the shortest path from start to target
      */
     public int[] getShortestPath(int fromNodeIndex, int toNodeIndex) {
@@ -1465,13 +1465,13 @@ public final class Game {
     }
 
     /**
-     * Gets the approximate shortest path taking into account the last move made (i.e., no reversals).
+     * Gets the approximate shortest path taking into account the last currentMove made (i.e., no reversals).
      * This is approximate only as the path is computed greedily. A more accurate path can be obtained
      * using A* which is slightly more costly.
      *
-     * @param fromNodeIndex The node index from where to start (i.e., current position)
-     * @param toNodeIndex   The target node index
-     * @param lastMoveMade  The last move made
+     * @param fromNodeIndex The root index from where to start (i.e., current position)
+     * @param toNodeIndex   The target root index
+     * @param lastMoveMade  The last currentMove made
      * @return the shortest path from start to target
      * @deprecated use getShortestPath() instead.
      *//*
@@ -1481,13 +1481,13 @@ public final class Game {
     }*/
 
     /**
-     * Gets the shortest path taking into account the last move made (i.e., no reversals).
+     * Gets the shortest path taking into account the last currentMove made (i.e., no reversals).
      * This is approximate only as the path is computed greedily. A more accurate path can be obtained
      * using A* which is slightly more costly.
      *
-     * @param fromNodeIndex The node index from where to start (i.e., current position)
-     * @param toNodeIndex   The target node index
-     * @param lastMoveMade  The last move made
+     * @param fromNodeIndex The root index from where to start (i.e., current position)
+     * @param toNodeIndex   The target root index
+     * @param lastMoveMade  The last currentMove made
      * @return the shortest path from start to target
      */
     public int[] getShortestPath(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade) {
@@ -1501,9 +1501,9 @@ public final class Game {
      * Similar to getApproximateShortestPath but returns the distance of the path only. It is slightly
      * more efficient.
      *
-     * @param fromNodeIndex The node index from where to start (i.e., current position)
-     * @param toNodeIndex   The target node index
-     * @param lastMoveMade  The last move made
+     * @param fromNodeIndex The root index from where to start (i.e., current position)
+     * @param toNodeIndex   The target root index
+     * @param lastMoveMade  The last currentMove made
      * @return the exact distance of the path
      * @deprecated use getShortestPathDistance() instead.
      *//*
@@ -1516,9 +1516,9 @@ public final class Game {
      * Similar to getShortestPath but returns the distance of the path only. It is slightly
      * more efficient.
      *
-     * @param fromNodeIndex The node index from where to start (i.e., current position)
-     * @param toNodeIndex   The target node index
-     * @param lastMoveMade  The last move made
+     * @param fromNodeIndex The root index from where to start (i.e., current position)
+     * @param toNodeIndex   The target root index
+     * @param lastMoveMade  The last currentMove made
      * @return the exact distance of the path
      */
     public int getShortestPathDistance(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade) {

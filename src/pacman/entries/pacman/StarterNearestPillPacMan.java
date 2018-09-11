@@ -72,8 +72,8 @@ public class StarterNearestPillPacMan extends Controller<MOVE> {
                     }*/
                     // the last case: just run!
                     /*else {
-                        GameView.addPoints(game, Color.RED, game.getShortestPath(pacManIdx, closestGhostIndex));
-                        return game.getNextMoveAwayFromTarget(pacManIdx, closestGhostIndex, DM.PATH);
+                        GameView.addPoints(game, Color.RED, game.getShortestPath(pacManIdx, closestRunFromTargetIndex));
+                        return game.getNextMoveAwayFromTarget(pacManIdx, closestRunFromTargetIndex, DM.PATH);
                     }*/
                 } /*else if (safePathToPower != null){
                     int closestPowerIndex = targetIndexFromPath(safePathToPower);

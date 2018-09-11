@@ -8,7 +8,7 @@ import java.util.*;
 /*
  * Pre-computes paths for more efficient execution of the game. It is a tradeoff between loading times, execution speed,
  * and file sizes. It works as follows: the paths from any junction to any other junction are computed for all directions
- * one can take at the junction. Then, for each node in the graph, the paths to the nearest one or two junctions are computed.
+ * one can take at the junction. Then, for each root in the graph, the paths to the nearest one or two junctions are computed.
  * A path is then found by
  * 	(a) find the nearest junction to the source (in the case of the ghosts, just follow the path): distance d_1
  *  (b) find the shortest distance to the one or two junctions closest to the target. This depends also on distance (d_3) from target junction to target: d_2
@@ -112,7 +112,7 @@ public class PathsCache {
         //we have reached a junction, fromJunction, which we entered with moveEnteredJunction
         int junctionFrom = fromJunction.nodeID;
         int junctionFromId = junctionIndexConverter.get(junctionFrom);
-        MOVE moveEnteredJunction = fromJunction.lastMove.equals(MOVE.NEUTRAL) ? lastMoveMade : fromJunction.lastMove; //if we are at a junction, consider last move instead
+        MOVE moveEnteredJunction = fromJunction.lastMove.equals(MOVE.NEUTRAL) ? lastMoveMade : fromJunction.lastMove; //if we are at a junction, consider last currentMove instead
 
         //now we need to get the 1 or 2 target junctions that enclose the target point
         ArrayList<JunctionData> junctionsTo = nodes[b].closestJunctions;
@@ -392,7 +392,7 @@ class Junction {
             paths[i] = new EnumMap<MOVE, int[]>(MOVE.class);
     }
 
-    // store the shortest path given the last move made
+    // store the shortest path given the last currentMove made
     public void addPath(int toJunction, MOVE firstMoveMade, int[] path) {
         paths[toJunction].put(firstMoveMade, path);
     }

@@ -3,9 +3,7 @@ package pacman;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanController;
 import pacman.controllers.examples.Legacy2TheReckoning;
-import pacman.entries.BT.*;
-import pacman.entries.BT.Composite.BTSelector;
-import pacman.entries.BT.Composite.BTSequence;
+import pacman.entries.pacman.BT.PacManBuilder;
 import pacman.game.Game;
 import pacman.game.GameView;
 
@@ -24,7 +22,13 @@ import static pacman.game.Constants.*;
  */
 @SuppressWarnings("unused")
 public class Executor {
+    public static final int FPS = 60;
     public static boolean visual = true;
+    public static final int SECOND = 1_000_000_000;
+    public final long OPTIMAL_TIME = SECOND / FPS;
+    public long lastTime = System.nanoTime();
+    private long lastFpsTime;
+    private int currentFPS;
 
     /**
      * The main method. Several options are listed - simply remove comments to use the option you want.
@@ -33,28 +37,6 @@ public class Executor {
      */
     public static void main(String[] args) {
         Executor exec = new Executor();
-
-        BTSequence peaceMode_sequence = new CollectPills_Sequence();
-        BTSelector peaceMode_selector = new PeaceMode();
-        // collect Pills
-        BTSequence collectPills_sequence = new CollectPills_Sequence();
-        collectPills_sequence.children.add(new GetClosestPill());
-        collectPills_sequence.children.add(new MoveToDestination());
-        // collect Power
-        BTSequence collectPower_sequence = new CollectPower_Sequence();
-        collectPower_sequence.children.add(new GetClosestPower());
-        collectPower_sequence.children.add(new MoveToDestination());
-
-        // any possible way
-        BTSequence possibleWay_sequence = new PossibleWay_Sequence();
-        possibleWay_sequence.children.add(new GetAnyPossibleWay());
-
-
-        // add sequences to the selector
-        peaceMode_selector.children.add(collectPills_sequence);
-        peaceMode_selector.children.add(collectPower_sequence);
-        peaceMode_selector.children.add(possibleWay_sequence);
-
 
         //run multiple games in batch mode - good for testing.
         int numTrials = 10;
@@ -71,7 +53,7 @@ public class Executor {
         String fileName = "replay.txt";
         //exec.replayGame("19970.txt", visual);
         // exec.runGameTimedRecorded(new SuperPacMan(), new Legacy2TheReckoning(), visual, fileName);
-        exec.runGameTimedRecorded(peaceMode_selector, new Legacy2TheReckoning(), visual, fileName);
+        exec.runGame(new PacManBuilder(), new Legacy2TheReckoning(), visual, 50);
         //exec.runGameTimed(new HumanController(new KeyBoardInput()), new Legacy2TheReckoning(), visual, 0);
         //exec.runGameTimed(new NearestPillPacManVS(), new AggressiveGhosts(), visual);
         //exec.runGameTimed(new StarterPacMan(), new StarterGhosts(), visual);
@@ -129,6 +111,52 @@ public class Executor {
         return replay;
     }
 
+    public void myGameLoop(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean visual, int delay) {
+        Game game = new Game(0);
+
+        GameView gv = null;
+
+        if (visual)
+            gv = new GameView(game).showGame();
+
+        int fps = 0;
+        int count=0;
+        float delta = 0;
+        while (!game.gameOver()) {
+
+            long now = System.nanoTime();
+            long elapsedTime = now - lastTime;
+            lastTime = now;
+
+            count += elapsedTime;
+            boolean render = false;
+
+            delta += elapsedTime / ((double) OPTIMAL_TIME);
+
+            while (delta >1){
+                delta--;
+
+                render = true;
+            }
+            game.advanceGame(pacManController.getMove(game.copy(), -1), ghostController.getMove(game.copy(), -1));
+            if (render) {
+                if (visual)
+                    gv.repaint();
+                fps++;
+            } else {
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (count >= SECOND) {
+                fps = 0;
+                count = 0;
+            }
+        }
+    }
+
     /**
      * For running multiple games without visuals. This is useful to get a good idea of how well a controller plays
      * against a chosen opponent: the random nature of the game means that performance can vary from game to game.
@@ -161,7 +189,7 @@ public class Executor {
     }
 
     /**
-     * Run a game in asynchronous mode: the game waits until a move is returned. In order to slow thing down in case
+     * Run a game in asynchronous mode: the game waits until a currentMove is returned. In order to slow thing down in case
      * the controllers return very quickly, a time limit can be used. If fasted gameplay is required, this delay
      * should be put as 0.
      *
@@ -184,6 +212,7 @@ public class Executor {
             try {
                 Thread.sleep(delay);
             } catch (Exception e) {
+                System.out.println("RunGame Delay Exception");
             }
 
             if (visual)

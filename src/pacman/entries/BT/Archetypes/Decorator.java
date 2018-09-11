@@ -1,7 +1,7 @@
 package pacman.entries.BT.Archetypes;
 
-import pacman.entries.BT.utils.Task;
+import pacman.entries.BT.utils.Node;
 
-public abstract class Decorator extends Task {
-    public Task child;
+public abstract class Decorator extends Node {
+    public Node child;
 }

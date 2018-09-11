@@ -8,7 +8,7 @@ import pacman.game.Game;
  * controller in various different execution modes. Your controller only needs to provide the
  * code for the getMove() method.
  *
- * @param <T> The generic type of the move to be returned (either a single move for Ms Pac-Man or an EnumMap for the ghosts).
+ * @param <T> The generic type of the currentMove to be returned (either a single currentMove for Ms Pac-Man or an EnumMap for the ghosts).
  */
 public abstract class Controller<T> implements Runnable {
     protected T lastMove;    //this is now protected. You can set this directly in your getMove() method to save an immediate response.
@@ -45,7 +45,7 @@ public abstract class Controller<T> implements Runnable {
      * updated accordingly.
      *
      * @param game    A copy of the current game
-     * @param timeDue The time the next move is due
+     * @param timeDue The time the next currentMove is due
      */
     public final void update(Game game, long timeDue) {
         synchronized (this) {
@@ -58,9 +58,9 @@ public abstract class Controller<T> implements Runnable {
     }
 
     /**
-     * Retrieves the move from the controller (whatever is stored in the class variable).
+     * Retrieves the currentMove from the controller (whatever is stored in the class variable).
      *
-     * @return The move stored in the class variable 'lastMove'
+     * @return The currentMove stored in the class variable 'lastMove'
      */
     public final T getMove() {
         return lastMove;
@@ -97,25 +97,25 @@ public abstract class Controller<T> implements Runnable {
     }
 
     /**
-     * This method is used to check whether the controller computed a move since the last
+     * This method is used to check whether the controller computed a currentMove since the last
      * update of the game.
      *
-     * @return Whether or not the controller computed a move since the last update
+     * @return Whether or not the controller computed a currentMove since the last update
      */
     public final boolean hasComputed() {
         return hasComputed;
     }
 
     /**
-     * Compute the next move given a copy of the current game and a time the move has to be computed by.
+     * Compute the next currentMove given a copy of the current game and a time the currentMove has to be computed by.
      * This is the method contestants need to implement. Many examples are available in
      * pacman.controllers.examples
      * Your controllers must be in the files: pacman.entries.pacman.MyPacMan.java for Pac-Man controllers or
      * pacman.entries.ghosts.MyGhosts.java for ghosts controllers.
      *
      * @param game    A copy of the current game
-     * @param timeDue The time the next move is due
-     * @return The move to be played (i.e., the move calculated by your controller)
+     * @param timeDue The time the next currentMove is due
+     * @return The currentMove to be played (i.e., the currentMove calculated by your controller)
      */
     public abstract T getMove(Game game, long timeDue);
 }

@@ -1,28 +1,33 @@
 package pacman.entries.BT.Composite;
 
-import pacman.entries.BT.utils.Status;
-import pacman.entries.BT.utils.Task;
+import pacman.entries.BT.utils.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static pacman.entries.BT.utils.Status.FAILURE;
-import static pacman.entries.BT.utils.Status.RUNNING;
+import static pacman.entries.BT.TreeBuilder.runningNode;
+import static pacman.entries.BT.utils.Node.Status.FAILURE;
+import static pacman.entries.BT.utils.Node.Status.RUNNING;
 
-public class BTSequence extends Task {
-    public List<Task> children = new ArrayList<>();
+public class BTSequence extends Node {
+    public List<Node> children = new ArrayList<>();
 
 
     @Override
+    public void init() {
+
+    }
+
+    @Override
     public Status execute() {
-        this.init();
+        //this.init();
         Status status = FAILURE;
-        for (Task task : this.children) {
-            status = task.execute();
+        for (Node node : this.children) {
+            status = node.execute();
             if (status == FAILURE)
                 return FAILURE;
             if (status == RUNNING) {
-                runningLeaf = task;
+                runningNode = node;
                 return RUNNING;
             }
         }
@@ -31,7 +36,12 @@ public class BTSequence extends Task {
 
 
     @Override
-    public boolean checkConditions() {
+    public boolean successConditions() {
+        return false;
+    }
+
+    @Override
+    public boolean runningConditions() {
         return false;
     }
 
@@ -41,5 +51,9 @@ public class BTSequence extends Task {
 
     }
 
+    public BTSequence add(Node node) {
+        children.add(node);
+        return this;
+    }
 
 }

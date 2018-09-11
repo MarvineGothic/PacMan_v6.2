@@ -58,7 +58,7 @@ public final class Constants {
      * Enumeration for the moves that are possible in the game. At each time step,
      * a controller is required to supply one of the 5 actions available. If the
      * controller replies NEUTRAL or does not reply in time, the previous action is
-     * repeated. If the previous action is not a legal move, a legal move is chosen
+     * repeated. If the previous action is not a legal currentMove, a legal currentMove is chosen
      * uniformly at random.
      */
     public enum MOVE {

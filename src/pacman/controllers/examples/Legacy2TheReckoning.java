@@ -40,9 +40,9 @@ public class Legacy2TheReckoning extends Controller<EnumMap<GHOST, MOVE>> {
                 //if ghosts are all in close proximity and not near Ms Pac-Man, disperse
                 if (isCrowded(game) && !closeToMsPacMan(game, currentIndex))
                     myMoves.put(ghost, getRetreatActions(game, ghost));                                        //go towards the power pill locations
-                    //if edible or Ms Pac-Man is close to power pill, move away from Ms Pac-Man
+                    //if edible or Ms Pac-Man is close to power pill, currentMove away from Ms Pac-Man
                 else if (game.getGhostEdibleTime(ghost) > 0 || closeToPower(game))
-                    myMoves.put(ghost, game.getApproximateNextMoveAwayFromTarget(currentIndex, pacmanIndex, game.getGhostLastMoveMade(ghost), DM.PATH));                //move away from ms pacman
+                    myMoves.put(ghost, game.getApproximateNextMoveAwayFromTarget(currentIndex, pacmanIndex, game.getGhostLastMoveMade(ghost), DM.PATH));                //currentMove away from ms pacman
                     //else go towards Ms Pac-Man
                 else
                     myMoves.put(ghost, game.getApproximateNextMoveTowardsTarget(currentIndex, pacmanIndex, game.getGhostLastMoveMade(ghost), DM.PATH));                //go towards ms pacman

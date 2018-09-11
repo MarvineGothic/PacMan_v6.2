@@ -26,9 +26,9 @@ public final class Maze {
     /*
      * Each maze is stored as a (connected) graph: all nodes have neighbours, stored in an array of length 4. The
      * index of the array associates the direction the neighbour is located at: '[up,right,down,left]'.
-     * For instance, if node '9' has neighbours '[-1,12,-1,6]', you can reach node '12' by going right, and node
+     * For instance, if root '9' has neighbours '[-1,12,-1,6]', you can reach root '12' by going right, and root
      * 6 by going left. The directions returned by the controllers should thus be in {0,1,2,3} and can be used
-     * directly to determine the next node to go to.
+     * directly to determine the next root to go to.
      */
     public Maze(int index) {
         loadNodes(NODE_NAMES[index]);
@@ -89,7 +89,7 @@ public final class Maze {
 
     /*
      * Loads the shortest path distances which have been pre-computed. The data contains the shortest distance from
-     * any node in the maze to any other node. Since the graph is symmetric, the symmetries have been removed to preserve
+     * any root in the maze to any other root. Since the graph is symmetric, the symmetries have been removed to preserve
      * memory and all distances are stored in a 1D array; they are looked-up using getDistance(-).
      */
     private void loadDistances(String fileName) {

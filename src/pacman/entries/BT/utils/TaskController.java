@@ -1,12 +1,12 @@
 package pacman.entries.BT.utils;
 
 /**
- * Class added by composition to any task,
- * to keep track of the Task state
+ * Class added by composition to any root,
+ * to keep track of the Node state
  * and logic flow.
  *
  * This state-control class is separated
- * from the Task class so the Decorators
+ * from the Node class so the Decorators
  * have a chance at compile-time security.
  * @author Ying
  *
@@ -14,7 +14,7 @@ package pacman.entries.BT.utils;
 public class TaskController
 {
     /**
-     * Indicates whether the task is finished
+     * Indicates whether the root is finished
      * or not
      */
     private boolean done;
@@ -24,22 +24,22 @@ public class TaskController
      */
     private boolean sucess;
     /**
-     * Indicates if the task has started
+     * Indicates if the root has started
      * or not
      */
     private boolean started;
     /**
-     * Reference to the task we monitor
+     * Reference to the root we monitor
      */
-    private Task task;
+    private Node node;
     /**
      * Creates a new instance of the
      * TaskController class
-     * @param task Task to controll.
+     * @param node Node to controll.
      */
-    public TaskController(Task task)
+    public TaskController(Node node)
     {
-        setTask(task);
+        setNode(node);
         initialize();
     }
     /**
@@ -52,12 +52,12 @@ public class TaskController
         this.started = false;
     }
     /**
-     * Sets the task reference
-     * @param task Task to monitor
+     * Sets the root reference
+     * @param node Node to monitor
      */
-    public void setTask(Task task)
+    public void setNode(Node node)
     {
-        this.task = task;
+        this.node = node;
     }
     /**
      * Starts the monitored class
@@ -65,16 +65,16 @@ public class TaskController
     public void safeStart()
     {
         this.started = true;
-       // task.start();
+       // root.start();
     }
     /**
-     * Ends the monitored task
+     * Ends the monitored root
      */
     public void safeEnd()
     {
         this.done = false;
         this.started = false;
-      //  task.end();
+      //  root.end();
     }
     /**
      * Ends the monitored class, with success
@@ -83,7 +83,7 @@ public class TaskController
     {
         this.sucess = true;
         this.done = true;
-        //task.logTask("Finished with success");
+        //root.logTask("Finished with success");
     }
     /**
      * Ends the monitored class, with failure
@@ -92,10 +92,10 @@ public class TaskController
     {
         this.sucess = false;
         this.done = true;
-        //task.logTask("Finished with failure");
+        //root.logTask("Finished with failure");
     }
     /**
-     * Indicates whether the task
+     * Indicates whether the root
      * finished successfully
      * @return True if it did, false if it didn't
      */
@@ -104,7 +104,7 @@ public class TaskController
         return this.sucess;
     }
     /**
-     * Indicates whether the task
+     * Indicates whether the root
      * finished with failure
      * @return True if it did, false if it didn't
      */
@@ -113,7 +113,7 @@ public class TaskController
         return !this.sucess;
     }
     /**
-     * Indicates whether the task finished
+     * Indicates whether the root finished
      * @return True if it did, false if it didn't
      */
     public boolean finished()

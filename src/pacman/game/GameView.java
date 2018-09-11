@@ -53,11 +53,11 @@ public final class GameView extends JComponent {
     ///////////////////////////////////////////////
 
     /**
-     * Adds a node to be highlighted using the color specified
+     * Adds a root to be highlighted using the color specified
      *
      * @param game        Copy of the current game
      * @param color       Colour to be used
-     * @param nodeIndices The node indices to be highlighted by the chosen colour
+     * @param nodeIndices The root indices to be highlighted by the chosen colour
      */
     public synchronized static void addPoints(Game game, Color color, int... nodeIndices) {
         if (isVisible)
@@ -70,8 +70,8 @@ public final class GameView extends JComponent {
      *
      * @param game             Copy of the current game
      * @param color            Colour to be used
-     * @param fromNnodeIndices The node indices where the lines start
-     * @param toNodeIndices    The node indices where the lines end
+     * @param fromNnodeIndices The root indices where the lines start
+     * @param toNodeIndices    The root indices where the lines end
      */
     public synchronized static void addLines(Game game, Color color, int[] fromNnodeIndices, int[] toNodeIndices) {
         if (isVisible)
@@ -85,7 +85,7 @@ public final class GameView extends JComponent {
      * @param game           the game
      * @param color          the color
      * @param fromNnodeIndex the from nnode index
-     * @param toNodeIndex    the to node index
+     * @param toNodeIndex    the to root index
      */
     public synchronized static void addLines(Game game, Color color, int fromNnodeIndex, int toNodeIndex) {
         if (isVisible)

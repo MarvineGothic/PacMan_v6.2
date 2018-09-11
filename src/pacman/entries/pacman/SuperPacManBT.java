@@ -102,7 +102,8 @@ public class SuperPacManBT extends Controller<MOVE> {
                         int closestPower = targetIndexFromPath(safePathToPower);
                         GameView.addPoints(game, Color.ORANGE, game.getShortestPath(pacManIdx, closestPower));
                         return game.getNextMoveTowardsTarget(pacManIdx, closestPower, DM.PATH);
-                    } else if (safePathToPills != null) {
+                    }
+                    else if (safePathToPills != null) {
                         closestPill = targetIndexFromPath(safePathToPills);
                         GameView.addPoints(game, Color.WHITE, game.getShortestPath(pacManIdx, closestPill));
                         return game.getNextMoveTowardsTarget(pacManIdx, closestPill, DM.PATH);

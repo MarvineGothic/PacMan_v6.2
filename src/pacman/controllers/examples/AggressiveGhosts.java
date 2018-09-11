@@ -14,7 +14,7 @@ import static pacman.game.Constants.DM;
  * The Class AggressiveGhosts.
  */
 public final class AggressiveGhosts extends Controller<EnumMap<GHOST, MOVE>> {
-    private final static float CONSISTENCY = 1.0f;    //carry out intended move with this probability
+    private final static float CONSISTENCY = 1.0f;    //carry out intended currentMove with this probability
     private Random rnd = new Random();
     private EnumMap<GHOST, MOVE> myMoves = new EnumMap<>(GHOST.class);
     private MOVE[] moves = MOVE.values();
@@ -28,7 +28,7 @@ public final class AggressiveGhosts extends Controller<EnumMap<GHOST, MOVE>> {
         for (GHOST ghost : GHOST.values())                //for each ghost
             if (game.doesGhostRequireAction(ghost))        //if it requires an action
             {
-                if (rnd.nextFloat() < CONSISTENCY)    //approach/retreat from the current node that Ms Pac-Man is at
+                if (rnd.nextFloat() < CONSISTENCY)    //approach/retreat from the current root that Ms Pac-Man is at
                     myMoves.put(ghost,
                             game.getApproximateNextMoveTowardsTarget(
                                     game.getGhostCurrentNodeIndex(ghost),
