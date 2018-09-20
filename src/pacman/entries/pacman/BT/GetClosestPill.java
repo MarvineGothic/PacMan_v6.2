@@ -6,7 +6,8 @@ import pacman.game.GameView;
 import java.awt.*;
 
 import static pacman.entries.pacman.BT.PacManBuilder.*;
-import static pacman.entries.pacman.Utils.*;
+import static pacman.entries.utils.Parameters.PILLS_THRESHOLD;
+import static pacman.entries.utils.Utils.*;
 
 public class GetClosestPill extends Node {
 

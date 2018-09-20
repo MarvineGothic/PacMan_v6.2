@@ -2,8 +2,9 @@ package pacman;
 
 import pacman.controllers.Controller;
 import pacman.controllers.HumanController;
-import pacman.controllers.examples.Legacy2TheReckoning;
+import pacman.controllers.examples.*;
 import pacman.entries.pacman.BT.PacManBuilder;
+import pacman.entries.pacman.SuperPacMan;
 import pacman.game.Game;
 import pacman.game.GameView;
 
@@ -40,7 +41,7 @@ public class Executor {
 
         //run multiple games in batch mode - good for testing.
         int numTrials = 10;
-        //exec.runExperiment(new RandomPacMan(), new RandomGhosts(), numTrials);
+        //exec.runExperiment(new PacManBuilder(), new RandomGhosts(), numTrials);
         //exec.runGameTimed(new RandomNonRevPacMan(), new RandomGhosts(), visual);
         //run a game in synchronous mode: game waits until controllers respond.
         /*int delay = 50;
@@ -52,8 +53,9 @@ public class Executor {
         visual = true;
         String fileName = "replay.txt";
         //exec.replayGame("19970.txt", visual);
-        // exec.runGameTimedRecorded(new SuperPacMan(), new Legacy2TheReckoning(), visual, fileName);
-        exec.runGame(new PacManBuilder(), new Legacy2TheReckoning(), visual, 50);
+         exec.runGameTimedRecorded(new SuperPacMan(), new AggressiveGhosts(), visual, fileName);
+        //exec.runGame(new PacManBuilder(), new AggressiveGhosts(), visual, 10);
+        //exec.runGame(new SuperPacMan(), new RandomGhosts(), visual, 5);
         //exec.runGameTimed(new HumanController(new KeyBoardInput()), new Legacy2TheReckoning(), visual, 0);
         //exec.runGameTimed(new NearestPillPacManVS(), new AggressiveGhosts(), visual);
         //exec.runGameTimed(new StarterPacMan(), new StarterGhosts(), visual);
@@ -111,52 +113,6 @@ public class Executor {
         return replay;
     }
 
-    public void myGameLoop(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean visual, int delay) {
-        Game game = new Game(0);
-
-        GameView gv = null;
-
-        if (visual)
-            gv = new GameView(game).showGame();
-
-        int fps = 0;
-        int count=0;
-        float delta = 0;
-        while (!game.gameOver()) {
-
-            long now = System.nanoTime();
-            long elapsedTime = now - lastTime;
-            lastTime = now;
-
-            count += elapsedTime;
-            boolean render = false;
-
-            delta += elapsedTime / ((double) OPTIMAL_TIME);
-
-            while (delta >1){
-                delta--;
-
-                render = true;
-            }
-            game.advanceGame(pacManController.getMove(game.copy(), -1), ghostController.getMove(game.copy(), -1));
-            if (render) {
-                if (visual)
-                    gv.repaint();
-                fps++;
-            } else {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (count >= SECOND) {
-                fps = 0;
-                count = 0;
-            }
-        }
-    }
-
     /**
      * For running multiple games without visuals. This is useful to get a good idea of how well a controller plays
      * against a chosen opponent: the random nature of the game means that performance can vary from game to game.
@@ -183,6 +139,7 @@ public class Executor {
 
             avgScore += game.getScore();
             System.out.println(i + "\t" + game.getScore());
+            System.out.println("Levels: " + game.getCurrentLevel());
         }
 
         System.out.println(avgScore / trials);
@@ -228,8 +185,8 @@ public class Executor {
      * @param ghostController  The Ghosts controller
      * @param visual           Indicates whether or not to use visuals
      */
-    public void runGameTimed(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean visual, int level) {
-        Game game = new Game(0, level);
+    public void runGameTimed(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean visual) {
+        Game game = new Game(0);
 
         GameView gv = null;
 

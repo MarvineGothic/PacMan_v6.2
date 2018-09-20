@@ -7,9 +7,9 @@ import pacman.game.GameView;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-import static pacman.entries.pacman.Utils.getAllIndices;
-import static pacman.entries.pacman.Utils.getSafeIndices;
-import static pacman.entries.pacman.Utils.getShortestSafePath;
+import static pacman.entries.utils.Utils.getAllIndices;
+import static pacman.entries.utils.Utils.getSafeIndices;
+import static pacman.entries.utils.Utils.getShortestSafePath;
 /*
  * Allows a human player to play the game using the arrow key of the keyboard.
  */

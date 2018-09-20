@@ -1,5 +1,6 @@
-package pacman.entries.pacman;
+package pacman.entries.utils;
 
+import pacman.entries.genetic.GeneticGene;
 import pacman.game.Constants;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
@@ -7,9 +8,10 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import pacman.game.internal.Node;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.*;
+import java.util.*;
+
+import static pacman.entries.utils.Parameters.GHOST_EDIBLE_TIME;
 
 public class Utils {
 
@@ -232,6 +234,22 @@ public class Utils {
             }
         }
         return minGhost;
+    }
+
+    public static int getClosestJunctionWithGap(Game game, int pacManIdx, int[] junctionsArray, int gap){
+        int closestJunction = game.getClosestNodeIndexFromNodeIndex(pacManIdx, junctionsArray, DM.PATH);
+
+        // ========= additionally check if PacMan is at least on some distance from junction
+        // ========== (to avoid glitches when PacMan is bouncing between two closest junctions)
+        double minDist = Integer.MAX_VALUE;
+        for (int i = 0; i < junctionsArray.length; i++) {
+            int distance = game.getShortestPathDistance(pacManIdx, junctionsArray[i], game.getPacmanLastMoveMade());
+            if (distance < minDist && distance > gap) {
+                minDist = distance;
+                closestJunction = junctionsArray[i];
+            }
+        }
+        return closestJunction;
     }
 
     // -------------------------------------------------- PATHS AND MOVES -----------------------------------------------------
@@ -487,8 +505,8 @@ public class Utils {
      */
     public static boolean isGhostDangerous(Game game, GHOST ghostType) {
         return !game.isGhostEdible(ghostType) &&
-                game.getGhostLairTime(ghostType) == 0 //&&
-                //game.getGhostEdibleTime(ghostType) < 300 &&
+                game.getGhostLairTime(ghostType) == 0 &&
+                game.getGhostEdibleTime(ghostType) <= GHOST_EDIBLE_TIME //&&
                 /*!isEdibleGhostReachable(game, ghostType)*/;
     }
 
@@ -542,4 +560,59 @@ public class Utils {
             integers[i] = array[i];
         return integers;
     }
+
+    //========================================== SERIALIZATION =======================================================
+
+    /**
+     * Saves a Genetic Population to file. This method performs Object Serialization
+     * using the Serialization interface provided by Java.
+     *
+     * @param fileName save location
+     * @throws IOException write error
+     */
+    public static void saveToFile(String fileName, Object object) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(fileName)))) {
+            oos.writeObject(object);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Loads a GeneticPopulation from file. This method performs Object Deserialization
+     * using the Serialization interface provided by Java.
+     *
+     * @param filename
+     * @return
+     * @throws IOException            read error
+     * @throws ClassNotFoundException object serializer error
+     */
+    public static Object loadFromFile(String filename) {
+        Object gen_pop ;
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(filename)))) {
+            gen_pop = in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            //e.printStackTrace();
+            return null;
+        }
+        return gen_pop;
+    }
+
+    //========================================== GAME =======================================================
+
+
+    /**
+     * Get the total number of bits required to store the chromosomes genes.
+     * This is used to construct the chromosomes that make up the initial population.
+     *
+     * @return total bits required to store the chromosome
+     */
+    public static int getTotalBits(GeneticGene[] _genes) {
+        int total = 0;
+        for (int i = 0; i < _genes.length; i++)
+            total += _genes[i].getBits();
+        return total;
+    }
+
+
 }

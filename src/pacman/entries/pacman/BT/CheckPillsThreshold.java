@@ -2,19 +2,18 @@ package pacman.entries.pacman.BT;
 
 import pacman.entries.BT.utils.Node;
 
-import static pacman.entries.BT.TreeBuilder.currentMove;
-import static pacman.entries.utils.Utils.getPossibleMove;
+import static pacman.entries.pacman.BT.PacManBuilder.activePillsIndices;
+import static pacman.entries.utils.Parameters.PILLS_THRESHOLD;
 
-public class GetAnyPossibleWay extends Node {
-
-
+public class CheckPillsThreshold extends Node {
     @Override
     public void init() {
+        activePillsIndices = game.getActivePillsIndices();
     }
 
     @Override
     public boolean successConditions() {
-        return true;
+        return activePillsIndices.length <= PILLS_THRESHOLD;
     }
 
     @Override
@@ -24,6 +23,6 @@ public class GetAnyPossibleWay extends Node {
 
     @Override
     public void doAction() {
-        currentMove = getPossibleMove(game, game.getPacmanLastMoveMade(), true, true);
+
     }
 }

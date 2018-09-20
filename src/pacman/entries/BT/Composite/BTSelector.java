@@ -1,5 +1,6 @@
 package pacman.entries.BT.Composite;
 
+import pacman.entries.BT.Archetypes.Composite;
 import pacman.entries.BT.utils.Node;
 
 import java.util.ArrayList;
@@ -9,8 +10,9 @@ import static pacman.entries.BT.TreeBuilder.runningNode;
 import static pacman.entries.BT.utils.Node.Status.FAILURE;
 import static pacman.entries.BT.utils.Node.Status.RUNNING;
 
-public class BTSelector extends Node {
-    public List<Node> children = new ArrayList<>();
+public class BTSelector extends Composite {
+    //public List<Node> children = new ArrayList<>();
+
 
     @Override
     public void init() {
@@ -46,10 +48,5 @@ public class BTSelector extends Node {
 
     @Override
     public void doAction() {
-    }
-
-    public BTSelector add(Node node) {
-        children.add(node);
-        return this;
     }
 }

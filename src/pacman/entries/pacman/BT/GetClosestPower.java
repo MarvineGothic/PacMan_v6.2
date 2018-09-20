@@ -6,14 +6,14 @@ import pacman.game.GameView;
 import java.awt.*;
 
 import static pacman.entries.pacman.BT.PacManBuilder.*;
-import static pacman.entries.pacman.Utils.*;
+import static pacman.entries.utils.Utils.*;
 
 public class GetClosestPower extends Node {
 
 
     public void init() {
         activePowerPillsIndices = game.getActivePowerPillsIndices();
-        activePillsIndices = game.getActivePillsIndices();
+        //
         safePathToPower = getShortestSafePath(game, game.getPacmanCurrentNodeIndex(), activePowerPillsIndices, false);
         //if (!isPathSafe(safePathToPower, game, true)) safePathToPills = null;
     }
@@ -32,6 +32,6 @@ public class GetClosestPower extends Node {
     public void doAction() {
         closestTarget = targetIndexFromPath(safePathToPower);
         GameView.addPoints(game, Color.ORANGE, game.getShortestPath(pacManIdx, closestTarget));
-        System.out.println("Closest Power: " + closestTarget);
+        //System.out.println("Closest Power: " + closestTarget);
     }
 }

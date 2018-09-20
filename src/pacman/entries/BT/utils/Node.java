@@ -3,7 +3,8 @@ package pacman.entries.BT.utils;
 import pacman.entries.BT.TreeBuilder;
 import pacman.game.Game;
 
-import static pacman.entries.BT.utils.Node.Status.*;
+import static pacman.entries.BT.utils.Node.Status.FAILURE;
+import static pacman.entries.BT.utils.Node.Status.SUCCESS;
 
 
 public abstract class Node {
@@ -27,6 +28,9 @@ public abstract class Node {
         return SUCCESS;
     }
 
+    public Node add(Node node){
+        return null;
+    }
 
     public abstract boolean successConditions();
 

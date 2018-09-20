@@ -24,7 +24,7 @@ public class StarterPacMan extends Controller<MOVE> {
         int pacmanCurrentNodeIndex = game.getPacmanCurrentNodeIndex();
 
 
-        //Strategy 1: if any non-edible ghost is too close (less than MIN_DISTANCE), run away
+        //Strategy 1: if any non-edible ghost is too close (less than P_MIN_DISTANCE), run away
         for (GHOST ghost : GHOST.values())
             if (!game.isGhostEdible(ghost) &&
                     game.getGhostLairTime(ghost) == 0 &&
