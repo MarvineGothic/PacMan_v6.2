@@ -5,7 +5,6 @@ import pacman.game.internal.*;
 
 import java.util.BitSet;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -1160,11 +1159,21 @@ public final class Game {
      * @return the shortest path distance
      */
     public int getShortestPathDistance(int fromNodeIndex, int toNodeIndex) {
+        int result = 0;
         if (fromNodeIndex == toNodeIndex)
             return 0;
-        else if (fromNodeIndex < toNodeIndex)
-            return currentMaze.shortestPathDistances[((toNodeIndex * (toNodeIndex + 1)) / 2) + fromNodeIndex];
-        else
+
+        else if (fromNodeIndex < toNodeIndex) {
+            try {
+                int index = ((toNodeIndex * (toNodeIndex + 1)) / 2) + fromNodeIndex;
+                result = currentMaze.shortestPathDistances[index];
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("Result: " + result);
+                System.out.println("ToNodeIndex: " + toNodeIndex);
+                System.out.println("FromNodeIndex: " + fromNodeIndex);
+            }
+            return result;
+        } else
             return currentMaze.shortestPathDistances[((fromNodeIndex * (fromNodeIndex + 1)) / 2) + toNodeIndex];
     }
 
@@ -1447,7 +1456,8 @@ public final class Game {
      * @param lastMoveMade  The last currentMove made
      * @return The A* path
      * @deprecated use getShortestPath() instead.
-     *//*
+     */
+    /*
     @Deprecated
     public int[] getAStarPath(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade) {
         return getShortestPath(fromNodeIndex, toNodeIndex, lastMoveMade);

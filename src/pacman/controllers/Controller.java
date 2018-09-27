@@ -111,7 +111,7 @@ public abstract class Controller<T> implements Runnable {
      * This is the method contestants need to implement. Many examples are available in
      * pacman.controllers.examples
      * Your controllers must be in the files: pacman.entries.pacman.MyPacMan.java for Pac-Man controllers or
-     * pacman.entries.ghosts.MyGhosts.java for ghosts controllers.
+     * pacman.entries.pacman.ghosts.MyGhosts.java for ghosts controllers.
      *
      * @param game    A copy of the current game
      * @param timeDue The time the next currentMove is due

@@ -2,9 +2,8 @@ package pacman;
 
 import pacman.controllers.Controller;
 import pacman.controllers.HumanController;
-import pacman.controllers.examples.*;
-import pacman.entries.pacman.BT.PacManBuilder;
-import pacman.entries.pacman.SuperPacMan;
+import pacman.controllers.examples.RandomGhosts;
+import pacman.entries.pacman.PacManControllerManager;
 import pacman.game.Game;
 import pacman.game.GameView;
 
@@ -24,8 +23,8 @@ import static pacman.game.Constants.*;
 @SuppressWarnings("unused")
 public class Executor {
     public static final int FPS = 60;
-    public static boolean visual = true;
     public static final int SECOND = 1_000_000_000;
+    public static boolean visual = true;
     public final long OPTIMAL_TIME = SECOND / FPS;
     public long lastTime = System.nanoTime();
     private long lastFpsTime;
@@ -41,21 +40,31 @@ public class Executor {
 
         //run multiple games in batch mode - good for testing.
         int numTrials = 10;
-        //exec.runExperiment(new PacManBuilder(), new RandomGhosts(), numTrials);
+        //exec.runExperiment(new PacManBTBuilder(), new RandomGhosts(), numTrials);
         //exec.runGameTimed(new RandomNonRevPacMan(), new RandomGhosts(), visual);
-        //run a game in synchronous mode: game waits until controllers respond.
+        //======================= synchronous mode: game waits until controllers respond. ==============================
         /*int delay = 50;
-        boolean visual = true;
         exec.runGame(new RandomPacMan(), new RandomGhosts(), visual, delay);*/
 
         ///*
         //run the game in asynchronous mode.
-        visual = true;
+
         String fileName = "replay.txt";
         //exec.replayGame("19970.txt", visual);
-         exec.runGameTimedRecorded(new SuperPacMan(), new AggressiveGhosts(), visual, fileName);
-        //exec.runGame(new PacManBuilder(), new AggressiveGhosts(), visual, 10);
+        exec.runGameTimed(new PacManControllerManager(3), new RandomGhosts(), visual);
+        // ===================================== SIMPLE CONTROLLER ===================================================
         //exec.runGame(new SuperPacMan(), new RandomGhosts(), visual, 5);
+
+        // ========================================== BEHAVIOR TREE ==================================================
+        //exec.runGameTimedRecorded(new PacManBTBuilder(false), new RandomGhosts(), visual, fileName);
+
+        // ========================================== PLAIN GA =======================================================
+        //exec.runGameTimedRecorded(new PMWGAController(), new Legacy2TheReckoning(), visual, fileName);
+
+        // ======================================= TRAINED PARAMETRIC GA =============================================
+        //exec.runGameTimedRecorded(new PacManBTBuilder(true), new Legacy2TheReckoning(), visual, fileName);
+        //exec.runGame(new PacManBTBuilder(), new AggressiveGhosts(), visual, 10);
+
         //exec.runGameTimed(new HumanController(new KeyBoardInput()), new Legacy2TheReckoning(), visual, 0);
         //exec.runGameTimed(new NearestPillPacManVS(), new AggressiveGhosts(), visual);
         //exec.runGameTimed(new StarterPacMan(), new StarterGhosts(), visual);
@@ -64,11 +73,11 @@ public class Executor {
 		
 		/*
 		//run the game in asynchronous mode but advance as soon as both controllers are ready  - this is the mode of the competition.
-		//time limit of DELAY ms still applies.
-		visual=true;
-		boolean fixedTime=false;
-		exec.runGameTimedSpeedOptimised(new RandomPacMan(),new RandomGhosts(),fixedTime,visual);
-		*/
+		*///time limit of DELAY ms still applies.
+
+        boolean fixedTime = false;
+        //exec.runGameTimedSpeedOptimised(new PacManBTBuilder(false), new AggressiveGhosts(), fixedTime, visual);
+
 
         //run game in asynchronous mode and record it to file for replay at a later stage.
         /*visual = true;
