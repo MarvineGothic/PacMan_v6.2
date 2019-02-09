@@ -1,10 +1,10 @@
-package pacman.entries.pacman.BehaviorTree.utils;
+package pacman.entries.pacman.BehaviorTree.Archetypes;
 
 import pacman.entries.pacman.BehaviorTree.TreeBuilder;
 import pacman.game.Game;
 
-import static pacman.entries.pacman.BehaviorTree.utils.Node.Status.FAILURE;
-import static pacman.entries.pacman.BehaviorTree.utils.Node.Status.SUCCESS;
+import static pacman.entries.pacman.BehaviorTree.Archetypes.Node.Status.FAILURE;
+import static pacman.entries.pacman.BehaviorTree.Archetypes.Node.Status.SUCCESS;
 
 
 public abstract class Node {

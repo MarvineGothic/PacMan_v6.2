@@ -1,9 +1,9 @@
 package pacman.entries.pacman.PacManControllers.BT.BTNodes;
 
-import pacman.entries.pacman.BehaviorTree.utils.Node;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.closestGhost;
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.closestTarget;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.closestGhost;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.closestTarget;
 import static pacman.entries.pacman.utils.Utils.getClosestEdibleGhost;
 
 public class GetClosestEdibleGhost extends Node {

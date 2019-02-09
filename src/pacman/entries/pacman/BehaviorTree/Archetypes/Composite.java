@@ -1,7 +1,5 @@
 package pacman.entries.pacman.BehaviorTree.Archetypes;
 
-import pacman.entries.pacman.BehaviorTree.utils.Node;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1099,6 +1099,14 @@ public final class Game {
      * @return The set of neighbouring nodes
      */
     public int[] getNeighbouringNodes(int nodeIndex) {
+        try{
+            Node n = currentMaze.graph[nodeIndex];
+        }catch (ArrayIndexOutOfBoundsException e){
+            e.printStackTrace();
+            System.out.println(currentMaze.graph.length);
+            System.out.println(nodeIndex);
+        }
+
         return currentMaze.graph[nodeIndex].allNeighbouringNodes.get(MOVE.NEUTRAL);
     }
 
@@ -1137,13 +1145,13 @@ public final class Game {
      * @return the currentMove to make to reach direct neighbour
      */
     public MOVE getMoveToMakeToReachDirectNeighbour(int currentNodeIndex, int neighbourNodeIndex) {
+
         for (MOVE move : MOVE.values()) {
             if (currentMaze.graph[currentNodeIndex].neighbourhood.containsKey(move)
                     && currentMaze.graph[currentNodeIndex].neighbourhood.get(move) == neighbourNodeIndex) {
                 return move;
             }
         }
-
         return null;
     }
 

@@ -1,6 +1,5 @@
 package pacman.entries.pacman.utils;
 
-import pacman.entries.pacman.GeneticAlgorithm.GeneticGene;
 import pacman.game.Constants;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
@@ -9,11 +8,17 @@ import pacman.game.Game;
 import pacman.game.internal.Node;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 import static pacman.entries.pacman.utils.Parameters.GHOST_EDIBLE_TIME;
 
 public class Utils {
+
+    public static final String ROOT = "./src/pacman/entries/pacman";
+    public static final String PACMAN_PROPERTIES = ROOT + "/Files/properties/pacman.properties";
 
     //============================================== GETTERS ===============================================
 
@@ -236,7 +241,7 @@ public class Utils {
         return minGhost;
     }
 
-    public static int getClosestJunctionWithGap(Game game, int pacManIdx, int[] junctionsArray, int gap){
+    public static int getClosestJunctionWithGap(Game game, int pacManIdx, int[] junctionsArray, int gap) {
         int closestJunction = game.getClosestNodeIndexFromNodeIndex(pacManIdx, junctionsArray, DM.PATH);
 
         // ========= additionally check if PacMan is at least on some distance from junction
@@ -573,9 +578,9 @@ public class Utils {
     public static void saveToFile(String fileName, Object object) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(fileName)))) {
             oos.writeObject(object);
-            System.out.println("New generated population is saved!");
+            System.out.println("New object is saved to file!");
         } catch (IOException e) {
-            System.out.println("Error! Couldn't save new generated population!");
+            System.out.println("Error! Couldn't save new object!");
             e.printStackTrace();
         }
     }
@@ -590,10 +595,12 @@ public class Utils {
      * @throws ClassNotFoundException object serializer error
      */
     public static Object loadFromFile(String filename) {
-        Object gen_pop ;
+        Object gen_pop;
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(filename)))) {
             gen_pop = in.readObject();
+            System.out.println("Successfully loaded from file: \n" + filename);
         } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error! Couldn't load from file!\n" + filename);
             e.printStackTrace();
             return null;
         }
@@ -602,19 +609,15 @@ public class Utils {
 
     //========================================== GAME =======================================================
 
-
-    /**
-     * Get the total number of bits required to store the chromosomes genes.
-     * This is used to construct the chromosomes that make up the initial population.
-     *
-     * @return total bits required to store the chromosome
-     */
-    public static int getTotalBits(GeneticGene[] _genes) {
-        int total = 0;
-        for (int i = 0; i < _genes.length; i++)
-            total += _genes[i].getBits();
-        return total;
+    public static Properties getProperties(String prop) {
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream(new File(prop))) {
+            properties.load(fis);
+        } catch (IOException e) {
+            System.out.println("Error! Couldn't load properties." + prop);
+            e.printStackTrace();
+            System.exit(0);
+        }
+        return properties;
     }
-
-
 }

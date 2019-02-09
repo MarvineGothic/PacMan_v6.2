@@ -1,17 +1,11 @@
 package pacman.entries.pacman.PacManControllers.BT.BTNodes;
 
-import pacman.entries.pacman.BehaviorTree.utils.Node;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.closestRunFromTargetIndex;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.closestRunFromTargetIndex;
 import static pacman.entries.pacman.utils.Parameters.MIN_DISTANCE_2;
 
-public class GhostMinDistance extends Node {
-    /*public int distance;
-
-    public GhostMinDistance(int dist) {
-        super();
-        distance = dist;
-    }*/
+public class CheckGhostMinDistance extends Node {
 
     @Override
     public void init() {

@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Parameters implements Serializable {
     private static final long serialVersionUID = -2584408698436514643L;
 
-    public static int MIN_DISTANCE = 30;    //if a ghost is this close, run away
+    public static int MIN_DISTANCE = 30;    //if a ghost is this close, train away
     public static int MIN_DISTANCE_2 = 25;
     public static int PILLS_THRESHOLD = 0;
     public static double PILLS_PERCENT = 20;

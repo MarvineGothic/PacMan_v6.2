@@ -18,13 +18,13 @@ import static pacman.game.Constants.*;
  * 3. Go to the nearest pill/power pill
  */
 public class StarterPacMan extends Controller<MOVE> {
-    private static final int MIN_DISTANCE = 20;    //if a ghost is this close, run away
+    private static final int MIN_DISTANCE = 20;    //if a ghost is this close, train away
 
     public MOVE getMove(Game game, long timeDue) {
         int pacmanCurrentNodeIndex = game.getPacmanCurrentNodeIndex();
 
 
-        //Strategy 1: if any non-edible ghost is too close (less than P_MIN_DISTANCE), run away
+        //Strategy 1: if any non-edible ghost is too close (less than P_MIN_DISTANCE), train away
         for (GHOST ghost : GHOST.values())
             if (!game.isGhostEdible(ghost) &&
                     game.getGhostLairTime(ghost) == 0 &&

@@ -1,11 +1,11 @@
 package pacman.entries.pacman.PacManControllers.BT.BTNodes;
 
-import pacman.entries.pacman.BehaviorTree.utils.Node;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 
 import static pacman.entries.pacman.BehaviorTree.TreeBuilder.currentMove;
 import static pacman.entries.pacman.utils.Utils.getPossibleMove;
 
-public class GetAnyPossibleWay extends Node {
+public class MoveToAnyPossibleWay extends Node {
 
 
     @Override

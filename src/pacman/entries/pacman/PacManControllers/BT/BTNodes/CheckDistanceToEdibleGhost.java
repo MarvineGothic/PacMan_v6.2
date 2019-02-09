@@ -1,10 +1,10 @@
 package pacman.entries.pacman.PacManControllers.BT.BTNodes;
 
-import pacman.entries.pacman.BehaviorTree.utils.Node;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 import pacman.game.Constants;
 
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.closestTarget;
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.pacManIdx;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.closestTarget;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.pacManIdx;
 import static pacman.entries.pacman.utils.Parameters.EDIBLE_GHOST_DISTANCE;
 
 public class CheckDistanceToEdibleGhost extends Node {

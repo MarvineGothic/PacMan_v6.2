@@ -14,7 +14,7 @@ import static pacman.game.Constants.*;
  * it or to start from scratch, using the classes supplied with the original software. Best of luck!
  *
  * This ghost controller does the following:
- * 1. If edible or Ms Pac-Man is close to power pill, run away from Ms Pac-Man
+ * 1. If edible or Ms Pac-Man is close to power pill, train away from Ms Pac-Man
  * 2. If non-edible, attack Ms Pac-Man with certain probability, else choose random direction
  */
 public final class StarterGhosts extends Controller<EnumMap<GHOST, MOVE>> {

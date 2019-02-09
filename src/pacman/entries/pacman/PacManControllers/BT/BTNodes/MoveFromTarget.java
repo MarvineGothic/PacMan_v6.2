@@ -1,14 +1,14 @@
 package pacman.entries.pacman.PacManControllers.BT.BTNodes;
 
-import pacman.entries.pacman.BehaviorTree.utils.Node;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 import pacman.game.Constants;
 import pacman.game.GameView;
 
 import java.awt.*;
 
 import static pacman.entries.pacman.BehaviorTree.TreeBuilder.currentMove;
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.closestRunFromTargetIndex;
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.pacManIdx;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.closestRunFromTargetIndex;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.pacManIdx;
 
 public class MoveFromTarget extends Node {
     @Override

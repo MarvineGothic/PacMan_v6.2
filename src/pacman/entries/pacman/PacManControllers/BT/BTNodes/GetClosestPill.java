@@ -1,11 +1,11 @@
 package pacman.entries.pacman.PacManControllers.BT.BTNodes;
 
-import pacman.entries.pacman.BehaviorTree.utils.Node;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 import pacman.game.GameView;
 
 import java.awt.*;
 
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.*;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.*;
 import static pacman.entries.pacman.utils.Parameters.PILLS_THRESHOLD;
 import static pacman.entries.pacman.utils.Utils.*;
 

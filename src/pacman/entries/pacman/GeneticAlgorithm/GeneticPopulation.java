@@ -5,103 +5,85 @@ import java.util.*;
 
 import static pacman.entries.pacman.GeneticAlgorithm.GeneticAlgorithm.*;
 import static pacman.entries.pacman.utils.Parameters.printParameters;
-import static pacman.entries.pacman.utils.Utils.getTotalBits;
 import static pacman.entries.pacman.utils.Utils.saveToFile;
 
 public class GeneticPopulation implements Serializable {
 
     private static final long serialVersionUID = -4765878553574173154L;
-    transient public GeneticGene[] genes;
+    public HashSet<String> genomesHistory;
     transient public GeneticAlgorithm ga;
     public GeneticChromosome[] _population;
     public double[] bestPhenoType;
+    private transient double highScore;
+    private transient double newScore;
+    private transient boolean save = false;
 
     public GeneticPopulation(GeneticAlgorithm ga) {
         this.ga = ga;
-        this.genes = ga.genes;
-        int bits = getTotalBits(genes);
+        this.genomesHistory = new HashSet<>();
+
         _population = new GeneticChromosome[POP_SIZE];
-        for (int i = 0; i < _population.length; i++)
-            _population[i] = new GeneticChromosome(ga, bits);
-
+        for (int i = 0; i < _population.length; i++) {
+            GeneticChromosome cr;
+            do {
+                cr = new GeneticChromosome(CHROMOSOME_LENGTH);
+            } while (!evaluate(cr));
+            _population[i] = cr;
+        }
         Arrays.sort(_population, new ChromosomeComparator());
-        saveToFile(GEN_POP, _population);
-    }
 
-    /**
-     * Creates a new GeneticPopulation from an existing chromosome array.
-     * This is used by the evolvePopulation method to generate new generations.
-     *
-     * @param savedPopulation population
-     */
-    public GeneticPopulation(GeneticAlgorithm ga, GeneticChromosome[] savedPopulation) {
-        this.ga = ga;
-        this.genes = ga.genes;
-        _population = savedPopulation;
-        Arrays.sort(_population, new ChromosomeComparator());
         bestPhenoType = ga.getPhenotype(getBestChromosome().getGenotype());
+        saveToFile(GEN_POP, this);
+    }
+
+    public static GeneticPopulation GeneticPopulationFactory(GeneticAlgorithm ga, GeneticPopulation gp) {
+        if (gp == null)
+            return new GeneticPopulation(ga);
+        else
+            return gp.setGa(ga);
     }
 
     /**
-     * This method evolves the population by one generation. It performs
-     * elitism, selection, mating, and mutation.
+     * This method mates this chromosome with a given chromosome. The specified
+     * crossover rate determines the likelihood that single-point crossover will
+     * occur between the two chromosomes. This method returns an array containing
+     * two offspring.
      *
-     * @return evolved population
+     * @param rate
+     * @param one
+     * @param two
+     * @param singlePointCross
+     * @return
      */
-    public GeneticPopulation evolvePopulation() {
-        GeneticChromosome[] next = new GeneticChromosome[_population.length];
+    public static GeneticChromosome[] multiPointCross(double rate, GeneticChromosome one, GeneticChromosome two, boolean singlePointCross) {
 
-
-        // Population size MUST be even, because we do everything in multiples of 2
-        int index = (int) (_population.length * ELITISM);
-        if (index % 2 != 0) index++;
-
-        // Elitism: Copy the best elements in the population into the next generation.
-        // Because the population is sorted, take elements between [0, index)
-        System.arraycopy(_population, 0, next, 0, index);
-
-        // While the next generation is not yet full, continue natural selection
-        while (index < next.length) {
-            // Select two parents using tournament selection
-            GeneticChromosome p1 = next[0];
-            GeneticChromosome p1a = select();
-
-            GeneticChromosome p2 = next[1];
-            GeneticChromosome p2a = select();
-
-            // Mate the parents and mutate their offspring
-            GeneticChromosome[] off = p1.multiPointCross(ga, p2, CROSS);
-            off[0].mutate(ga, MUTATE);
-            off[1].mutate(ga, MUTATE);
-
-            // Put the offspring into the next generation and increment the counter
-            System.arraycopy(off, 0, next, index, 2);
-            index += 2;
-            if (index >= next.length) break;
-
-            // Mate the parents and mutate their offspring
-            off = p1.multiPointCross(ga, p1a, CROSS);
-            off[0].mutate(ga, MUTATE);
-            off[1].mutate(ga, MUTATE);
-
-            // Put the offspring into the next generation and increment the counter
-            System.arraycopy(off, 0, next, index, 2);
-            index += 2;
-            if (index >= next.length) break;
-
-            // Mate the parents and mutate their offspring
-            off = p2.multiPointCross(ga, p2a, CROSS);
-            off[0].mutate(ga, MUTATE);
-            off[1].mutate(ga, MUTATE);
-
-            // Put the offspring into the next generation and increment the counter
-            System.arraycopy(off, 0, next, index, 2);
-            index += 2;
-            if (index >= next.length) break;
+        if (one.getGenotype().equals(two.getGenotype())) {
+            System.out.println("same initial");
+            System.out.println(one.getGenotype());
+            System.out.println(two.getGenotype());
         }
 
-        // Return a new generation of the population
-        return new GeneticPopulation(ga, next);
+        int crossLines = new Random().nextInt(one.get_genome().length / 5);
+        if (singlePointCross) crossLines = 1;
+        boolean[] c1 = Arrays.copyOf(one.get_genome(), one.get_genome().length);
+        boolean[] c2 = Arrays.copyOf(two.get_genome(), two.get_genome().length);
+
+
+        for (int i = 0; i < crossLines; i++) {
+            if (Math.random() <= rate) {
+                int index = (int) (Math.random() * one.get_genome().length);
+                System.arraycopy(one.get_genome(), 0, c2, 0, index);
+                System.arraycopy(two.get_genome(), 0, c1, 0, index);
+            }
+        }
+
+        return new GeneticChromosome[]{new GeneticChromosome(c1),
+                new GeneticChromosome(c2)};
+    }
+
+    public GeneticPopulation setGa(GeneticAlgorithm ga) {
+        this.ga = ga;
+        return this;
     }
 
     /**
@@ -112,136 +94,105 @@ public class GeneticPopulation implements Serializable {
      *
      * @return
      */
-    public GeneticPopulation evolvePopulation2() {
+    public GeneticPopulation evolvePopulation() {
         List<GeneticChromosome> nextG = new ArrayList<>(Arrays.asList(_population));
 
-        double highScore = getBestChromosome().getFitness();
-        double newScore = 0;
-        boolean save = false;
-        int count = 0;
+        highScore = getBestChromosome().getFitness();
+        newScore = 0;
+        save = false;
+        int iterations = 0;
 
-        while (true) {
-            //System.out.println("Size of population: " + nextG.size());
+        do {
+            iterations++;
             for (int i = 0; i < 3; i++) {
                 for (int j = i + 1; j < 3 + i; j++) {
-                    GeneticChromosome[] off = _population[i].multiPointCross(ga, _population[j], CROSS);
-
-                    System.out.println("i: " + i + " j: " + j);
-                    System.out.println(off[0].gameScore.score);
-                    System.out.println(off[1].gameScore.score);
-
-
-                    // ============= FIRST CHECK: NO MUTATION =============
-                    newScore = Math.min(off[0].getFitness(), off[1].getFitness());
-                    if (newScore > highScore) {
-                        off[0].mutate(ga, MUTATE);
-                        off[1].mutate(ga, MUTATE);
+                    // ============= CROSSOVER =============
+                    GeneticChromosome one = _population[i];
+                    GeneticChromosome two = _population[j];
+                    if (one.getGenotype().equals(two.getGenotype())) {
+                        System.out.println("same initial");
+                        two.mutate(MUTATE);
+                        System.out.println(one.getGenotype());
+                        System.out.println(two.getGenotype());
                     }
+                    GeneticChromosome[] off = multiPointCross(CROSS, one, two, false);
+                    checkScoreAndMutate(off, nextG);
 
-                    // ============= SECOND CHECK: WITH MUTATION =============
-                    newScore = Math.min(off[0].getFitness(), off[1].getFitness());
-                    if (off[0].gameScore.score > 0.6 * (1 / highScore)) nextG.addAll(Collections.singletonList(off[0]));
-                    if (off[1].gameScore.score > 0.6 * (1 / highScore)) nextG.addAll(Collections.singletonList(off[1]));
-                    // nextG.addAll(Arrays.asList(off));
-                    if (newScore < highScore) {
-                        highScore = newScore;
-                        System.out.println("We got highScore: " + newScore);
-                        printParameters();
-                        save = true;
-
-                    }
-                    // ============= THIRD CHECK: TRY TOURNAMENT =============
-                    else {
-                        off = _population[i].multiPointCross(ga, select(), CROSS);
-                        /*System.out.println("Tournament:");
-                        System.out.println(off[0].gameScore.score);
-                        System.out.println(off[1].gameScore.score);*/
-
-                        // ============= FIRST CHECK: NO MUTATION =============
-                        newScore = Math.min(off[0].getFitness(), off[1].getFitness());
-                        if (newScore > highScore) {
-                            off[0].mutate(ga, MUTATE);
-                            off[1].mutate(ga, MUTATE);
-
-                            /*System.out.println("After mutation:");
-                            System.out.println(off[0].gameScore.score);
-                            System.out.println(off[1].gameScore.score);*/
-                        }
-
-                        // ============= SECOND CHECK: WITH MUTATION =============
-                        newScore = Math.min(off[0].getFitness(), off[1].getFitness());
-                        if (off[0].gameScore.score > 0.6 * (1 / highScore))
-                            nextG.addAll(Collections.singletonList(off[0]));
-                        if (off[1].gameScore.score > 0.6 * (1 / highScore))
-                            nextG.addAll(Collections.singletonList(off[1]));
-                        //nextG.addAll(Arrays.asList(off));
-                        if (newScore < highScore) {
-                            highScore = newScore;
-                            System.out.println("We got highScore: " + newScore);
-                            printParameters();
-                            save = true;
-
-                        }
-                    }
+                    // ============= TOURNAMENT =============
+                    /*if (!save) {
+                        off = multiPointCross(CROSS, one, select(one), false);
+                        checkScoreAndMutate(off, nextG);
+                    }*/
                 }
             }
-            if (save) break;
-        }
+            System.out.println(iterations);
+        } while (!save && iterations < 1);
 
 
-        System.out.println("We finished");
+        System.out.print("We finished ");
+        if (!save) System.out.printf("due to the limit of %d iterations\n", iterations);
+        System.out.println(" Chromosome cash size: " + genomesHistory.size());
 
-        // sort new generation and throw out the worst chromosomes:
+        // sort new generation and kill the worst chromosomes:
         nextG.sort(new ChromosomeComparator());
         GeneticChromosome[] next = new GeneticChromosome[POP_SIZE];
         for (int i = 0; i < next.length; i++) {
             next[i] = nextG.get(i);
         }
 
-        //Arrays.sort(next, new ChromosomeComparator());
-        GeneticPopulation population = new GeneticPopulation(ga, next);
-        saveToFile(GEN_POP, population);
-        return population;
+        _population = next;
+        bestPhenoType = ga.getPhenotype(getBestChromosome().getGenotype());
+
+        saveToFile(GEN_POP_TRAIN, this);
+        HashSet<String> genomesHistoryCopy = genomesHistory;
+        genomesHistory = new HashSet<>();
+        saveToFile(GEN_POP, this);
+        genomesHistory = genomesHistoryCopy;
+        return this;
     }
 
     /**
-     * Inner method for evolvePopulation2()
+     * Inner method for evolvePopulation()
      *
-     * @param newScore
      * @param off
-     * @param highScore
      * @param nextG
-     * @param save
-     * @return
      */
-    private Object[] highScoreRuns(double newScore, GeneticChromosome[] off, double highScore, List<GeneticChromosome> nextG, boolean save) {
-        Object[] result = new Object[5];
+    private void checkScoreAndMutate(GeneticChromosome[] off, List<GeneticChromosome> nextG) {
+        evaluate(off[0]);
+        evaluate(off[1]);
+
         // ============= FIRST CHECK: NO MUTATION =============
         newScore = Math.min(off[0].getFitness(), off[1].getFitness());
         if (newScore > highScore) {
-            off[0].mutate(ga, MUTATE);
-            off[1].mutate(ga, MUTATE);
-
-            System.out.println("After mutation:");
-            System.out.println(off[0].gameScore.score);
-            System.out.println(off[1].gameScore.score);
+            off[0].mutate(MUTATE);
+            off[1].mutate(MUTATE);
         }
+        evaluate(off[0]);
+        evaluate(off[1]);
 
         // ============= SECOND CHECK: WITH MUTATION =============
         newScore = Math.min(off[0].getFitness(), off[1].getFitness());
-        if (off[0].gameScore.score > 0.6 * (1 / highScore)) nextG.addAll(Collections.singletonList(off[0]));
-        if (off[1].gameScore.score > 0.6 * (1 / highScore)) nextG.addAll(Collections.singletonList(off[1]));
+        if (off[0].gameScore != null && off[0].gameScore.score > 0.6 * (1 / highScore))
+            nextG.addAll(Collections.singletonList(off[0]));
+        if (off[1].gameScore != null && off[1].gameScore.score > 0.6 * (1 / highScore))
+            nextG.addAll(Collections.singletonList(off[1]));
+
         if (newScore < highScore) {
             highScore = newScore;
             System.out.println("We got highScore: " + newScore);
             printParameters();
             save = true;
         }
-        result[0] = newScore;
-        result[1] = highScore;
-        result[2] = nextG;
-        result[3] = save;
-        return result;
+    }
+
+    private boolean evaluate(GeneticChromosome off) {
+        int size = genomesHistory.size();
+        genomesHistory.add(off.getGenotype());
+        if (size < genomesHistory.size()) {
+            off.evaluateChromosome(ga);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -251,21 +202,21 @@ public class GeneticPopulation implements Serializable {
      *
      * @return selected chromosome
      */
-    private GeneticChromosome select() {
+    private GeneticChromosome select(GeneticChromosome first) {
 
-        GeneticChromosome winner = null;
+        GeneticChromosome winner = first;
         double min = Double.MAX_VALUE;
 
-        for (int i = 0; i < TOURNAMENT_SIZE; i++) {
-            int rand = (int) (Math.random() * _population.length);
-            double fitness = _population[rand].getFitness();
+        while (winner.equals(first))
+            for (int i = 0; i < TOURNAMENT_SIZE; i++) {
+                int rand = (int) (Math.random() * _population.length);
+                double fitness = _population[rand].getFitness();
 
-            if (fitness < min) {
-                winner = _population[rand];
-                min = fitness;
+                if (fitness < min) {
+                    winner = _population[rand];
+                    min = fitness;
+                }
             }
-        }
-
         return winner;
     }
 
@@ -274,8 +225,7 @@ public class GeneticPopulation implements Serializable {
      */
     double getAverageFitness() {
         double avg = 0.0;
-        for (int i = 0; i < _population.length; i++)
-            avg += _population[i].getFitness();
+        for (GeneticChromosome a_population : _population) avg += a_population.getFitness();
         return avg / _population.length;
     }
 

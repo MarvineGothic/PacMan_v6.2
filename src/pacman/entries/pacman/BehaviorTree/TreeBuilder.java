@@ -1,13 +1,12 @@
 package pacman.entries.pacman.BehaviorTree;
 
 import pacman.controllers.Controller;
-import pacman.entries.pacman.BehaviorTree.utils.Node;
-import pacman.entries.pacman.utils.ParametricPhenotype;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-import static pacman.entries.pacman.BehaviorTree.utils.Node.Status;
-import static pacman.entries.pacman.BehaviorTree.utils.Node.Status.*;
+import static pacman.entries.pacman.BehaviorTree.Archetypes.Node.Status;
+import static pacman.entries.pacman.BehaviorTree.Archetypes.Node.Status.*;
 
 @SuppressWarnings("all")
 public abstract class TreeBuilder extends Controller<MOVE> {
@@ -31,8 +30,6 @@ public abstract class TreeBuilder extends Controller<MOVE> {
         Node.setTreeBuilder(this);
     }
 
-    public abstract TreeBuilder addPhenotype(ParametricPhenotype parametricPhenotype);
-
     public abstract void init();
 
     public abstract void constructTree();
@@ -42,8 +39,7 @@ public abstract class TreeBuilder extends Controller<MOVE> {
         TreeBuilder.game = game;
         Node.game = game;
 
-        //System.out.println(lastMove);
-        // if previous or very first session finished/started with SUCCESS or FAILURE then run the tree again
+        // if previous or very first session finished/started with SUCCESS or FAILURE then train the tree again
         if (status == SUCCESS || status == FAILURE)
             status = execute();
         else if (status.equals(RUNNING)) {
@@ -51,15 +47,12 @@ public abstract class TreeBuilder extends Controller<MOVE> {
             status = runningNode.execute();
         }
 
-        // check new session, if it's new of course ;)
-
         if (status.equals(RUNNING))
             return currentMove;
         else if (status.equals(SUCCESS)) return currentMove;
-        else {
-            //System.out.println("final currentMove" + lastMove);
+        else
             return lastMove;
-        }
+
     }
 
     public Status execute() {

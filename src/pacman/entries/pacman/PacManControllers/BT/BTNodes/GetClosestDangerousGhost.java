@@ -1,8 +1,8 @@
 package pacman.entries.pacman.PacManControllers.BT.BTNodes;
 
-import pacman.entries.pacman.BehaviorTree.utils.Node;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.*;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.*;
 import static pacman.entries.pacman.utils.Parameters.MIN_DISTANCE;
 import static pacman.entries.pacman.utils.Utils.getClosestGhost;
 

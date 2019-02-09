@@ -1,8 +1,8 @@
 package pacman.entries.pacman.PacManControllers.BT.BTNodes;
 
-import pacman.entries.pacman.BehaviorTree.utils.Node;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.activePowerPillsIndices;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.activePowerPillsIndices;
 import static pacman.entries.pacman.utils.Parameters.POWERS_LEFT;
 public class CheckPowersLeft extends Node {
     @Override

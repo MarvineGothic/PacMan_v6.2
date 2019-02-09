@@ -3,7 +3,7 @@ package pacman.controllers;
 import pacman.game.Game;
 
 /**
- * This class is the superclass of your controller. In contains the code required to run the
+ * This class is the superclass of your controller. In contains the code required to train the
  * controller as a thread. In provides numerous methods that allow the Executor to use the
  * controller in various different execution modes. Your controller only needs to provide the
  * code for the getMove() method.
@@ -67,7 +67,7 @@ public abstract class Controller<T> implements Runnable {
     }
 
     /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
+     * @see java.lang.Runnable#train()
      */
     public final void run() {
         while (alive) {

@@ -75,7 +75,7 @@ public class SuperPacMan extends Controller<MOVE> {
         List<int[]> safePaths = getSafeDistancePaths(50, game, pacManIdx, false);
 
 
-        //Strategy 1: if any non-edible ghost is too close (less than P_MIN_DISTANCE), run away
+        //Strategy 1: if any non-edible ghost is too close (less than P_MIN_DISTANCE), train away
         for (GHOST ghost : GHOST.values())
             if (isGhostDangerous(game, ghost)) {
 

@@ -1,7 +1,7 @@
 package pacman.entries.pacman.PacManControllers.BT.BTNodes;
 
-import pacman.entries.pacman.BehaviorTree.utils.Node;
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.*;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.*;
 import static pacman.entries.pacman.utils.Parameters.PILLS_PERCENT;
 
 public class CheckPillsPercent extends Node {

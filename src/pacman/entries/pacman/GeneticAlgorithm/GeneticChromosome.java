@@ -4,15 +4,14 @@ import pacman.entries.pacman.utils.GameScore;
 import pacman.entries.pacman.utils.ParametricPhenotype;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.Objects;
 
 public class GeneticChromosome implements Serializable {
 
     private static final long serialVersionUID = -4765878553574173154L;
     GameScore gameScore;
     private boolean[] _genome;
-    private double _fitness;
+    private double _fitness = Double.MAX_VALUE;
     private double avgFitness;
 
     /**
@@ -22,9 +21,9 @@ public class GeneticChromosome implements Serializable {
      *
      * @param bits number of bits
      */
-    public GeneticChromosome(GeneticAlgorithm ga, int bits) {
+    public GeneticChromosome(int bits) {
         _genome = new boolean[bits];
-        randomizeChromosome(ga);
+        randomizeChromosome();
     }
 
     /**
@@ -32,25 +31,22 @@ public class GeneticChromosome implements Serializable {
      *
      * @param genome bit array
      */
-    public GeneticChromosome(GeneticAlgorithm ga, boolean[] genome) {
+    public GeneticChromosome(boolean[] genome) {
         _genome = genome;
-        gameScore = ga.runEvaluationGame(getGenotype());
-        //gameScore = ga.evaluatePopulation(getGenotype(), POP_SIZE);
-        _fitness = gameScore.getFintess_01();
+    }
 
+    public void evaluateChromosome(GeneticAlgorithm ga) {
+        gameScore = ga.runEvaluationGame(getGenotype());
+        _fitness = gameScore.getFintess_01();
     }
 
     /**
      * Randomizes the numbers on the mChromosome array to values 0 or 1
      */
-    public void randomizeChromosome(GeneticAlgorithm ga) {
-        // code for randomization of initial weights goes HERE
+    public void randomizeChromosome() {
         for (int i = 0; i < _genome.length; i++) {
             _genome[i] = Math.random() < 0.5;
         }
-        gameScore = ga.runEvaluationGame(getGenotype());
-        //gameScore = ga.evaluatePopulation(getGenotype(), POP_SIZE);
-        _fitness = gameScore.getFintess_01();
     }
 
     public void averageFitness(GeneticAlgorithm ga) {
@@ -101,59 +97,32 @@ public class GeneticChromosome implements Serializable {
     }
 
     /**
-     * This method mates this chromosome with a given chromosome. The specified
-     * crossover rate determines the likelihood that single-point crossover will
-     * occur between the two chromosomes. This method returns an array containing
-     * two offspring.
-     *
-     * @param othr other parent chromosome
-     * @param rate crossover probability
-     * @return offspring chromosomes
-     */
-    public GeneticChromosome[] singlePointCross(GeneticAlgorithm ga, GeneticChromosome othr, double rate) {
-        boolean[] c1 = Arrays.copyOf(this._genome, this._genome.length);
-        boolean[] c2 = Arrays.copyOf(othr._genome, othr._genome.length);
-
-        if (Math.random() <= rate) {
-            int index = (int) (Math.random() * this._genome.length);
-            System.arraycopy(this._genome, 0, c2, 0, index);
-            System.arraycopy(othr._genome, 0, c1, 0, index);
-        }
-
-        return new GeneticChromosome[]{new GeneticChromosome(ga, c1),
-                new GeneticChromosome(ga, c2)};
-    }
-
-    public GeneticChromosome[] multiPointCross(GeneticAlgorithm ga, GeneticChromosome othr, double rate) {
-        int crossLines = new Random().nextInt(this._genome.length / 5);
-        boolean[] c1 = Arrays.copyOf(this._genome, this._genome.length);
-        boolean[] c2 = Arrays.copyOf(othr._genome, othr._genome.length);
-
-        for (int i = 0; i < crossLines; i++) {
-            if (Math.random() <= rate) {
-                int index = (int) (Math.random() * this._genome.length);
-                System.arraycopy(this._genome, 0, c2, 0, index);
-                System.arraycopy(othr._genome, 0, c1, 0, index);
-            }
-        }
-        return new GeneticChromosome[]{new GeneticChromosome(ga, c1),
-                new GeneticChromosome(ga, c2)};
-    }
-
-    /**
      * This method randomly flips bits in the genome based on a specified
      * mutation probability. The greater the mutation rate, the more likely
      * mutations will occur.
      *
      * @param rate mutation probability
      */
-    public void mutate(GeneticAlgorithm ga, double rate) {
+    public void mutate(double rate) {
         for (int i = 0; i < _genome.length; i++)
             if (Math.random() <= rate)
                 _genome[i] = !_genome[i];
-        gameScore = ga.runEvaluationGame(getGenotype());
-        //gameScore = ga.evaluatePopulation(getGenotype(), POP_SIZE);
-        _fitness = gameScore.getFintess_01();
     }
 
+    public boolean[] get_genome() {
+        return _genome;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GeneticChromosome that = (GeneticChromosome) o;
+        return Objects.equals(getGenotype(), that.getGenotype());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getGenotype());
+    }
 }

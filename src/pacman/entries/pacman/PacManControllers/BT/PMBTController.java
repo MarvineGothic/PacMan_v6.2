@@ -3,7 +3,7 @@ package pacman.entries.pacman.PacManControllers.BT;
 import pacman.entries.pacman.BehaviorTree.Composite.BTSelector;
 import pacman.entries.pacman.BehaviorTree.Composite.BTSequence;
 import pacman.entries.pacman.BehaviorTree.TreeBuilder;
-import pacman.entries.pacman.BehaviorTree.utils.Node;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 import pacman.entries.pacman.GeneticAlgorithm.GeneticPopulation;
 import pacman.entries.pacman.PacManControllers.BT.BTNodes.*;
 import pacman.entries.pacman.utils.Parameters;
@@ -21,7 +21,7 @@ import static pacman.entries.pacman.GeneticAlgorithm.GeneticAlgorithm.PARAM_GA_P
 import static pacman.entries.pacman.utils.Parameters.PILLS_THRESHOLD;
 import static pacman.entries.pacman.utils.Utils.*;
 
-public class PacManBTBuilder extends TreeBuilder {
+public class PMBTController extends TreeBuilder {
 
     public static ParametricPhenotype parametricPhenotype;
     public static List<int[]> allPathsList = new ArrayList<>();
@@ -41,11 +41,11 @@ public class PacManBTBuilder extends TreeBuilder {
     public static int[] safePathToPower;
     public static int[] activePowerPillsIndices;
 
-    public PacManBTBuilder(Node root) {
+    public PMBTController(Node root) {
         super(root);
     }
 
-    public PacManBTBuilder(boolean useTrainedParameters) {
+    public PMBTController(boolean useTrainedParameters) {
         super();
         if (useTrainedParameters) {
             Properties props = new Properties();
@@ -53,7 +53,7 @@ public class PacManBTBuilder extends TreeBuilder {
                 props.load(fis);
                 GeneticPopulation savedPopulation = (GeneticPopulation) loadFromFile(props.getProperty("game.ga"));
                 if (savedPopulation != null)
-                    PacManBTBuilder.parametricPhenotype = new ParametricPhenotype(savedPopulation.getBestChromosome().getGenotype());
+                    PMBTController.parametricPhenotype = new ParametricPhenotype(savedPopulation.getBestChromosome().getGenotype());
                 else System.out.println("Error! Couldn't load saved population file!");
             } catch (IOException e) {
                 System.out.println("Error! Was unable to load file!");
@@ -63,20 +63,9 @@ public class PacManBTBuilder extends TreeBuilder {
         }
     }
 
-    public PacManBTBuilder(ParametricPhenotype parametricPhenotype) {
+    public PMBTController(ParametricPhenotype parametricPhenotype) {
         super();
-        PacManBTBuilder.parametricPhenotype = parametricPhenotype;
-    }
-
-
-    @Override
-    public TreeBuilder addPhenotype(ParametricPhenotype parametricPhenotype) {
-        // initialize fields from ParametricPhenotype to PacMan:
-        /*MIN_DISTANCE = parametricPhenotype.P_MIN_DISTANCE;
-        MIN_DISTANCE_2 = parametricPhenotype.P_MIN_DISTANCE_2;
-        PILLS_THRESHOLD = parametricPhenotype.P_PILLS_THRESHOLD;
-        GHOST_EDIBLE_TIME = parametricPhenotype.P_GHOST_EDIBLE_TIME;*/
-        return this;
+        PMBTController.parametricPhenotype = parametricPhenotype;
     }
 
     public void init() {
@@ -86,7 +75,7 @@ public class PacManBTBuilder extends TreeBuilder {
             junctions = game.getJunctionIndices();
             allPathsList = getAllJunctionPaths(game, junctions);
             totalPills = game.getPillIndices();
-            if (PILLS_THRESHOLD != -1)
+            if (PILLS_THRESHOLD == 0)
                 PILLS_THRESHOLD = getPillsThreshold(game, allPathsList);
         }
     }
@@ -99,7 +88,7 @@ public class PacManBTBuilder extends TreeBuilder {
                         add(new BTSelector().
                                 add(new BTSequence().
                                         add(new GetClosestPill()).
-                                        add(new GhostMinDistance()).
+                                        add(new CheckGhostMinDistance()).
                                         add(new MoveTowardsTarget())).
                                 add(new BTSequence().
                                         add(new GetClosestPower()).
@@ -111,7 +100,7 @@ public class PacManBTBuilder extends TreeBuilder {
                                         add(new CheckSafeJunctionsNDE()).
                                         add(new MoveTowardsTarget())).
                                 add(new MoveFromTarget()).
-                                add(new GetAnyPossibleWay())
+                                add(new MoveToAnyPossibleWay())
                         )).
                 add(new BTSequence().
                         add(new GetClosestEdibleGhost()).
@@ -136,6 +125,6 @@ public class PacManBTBuilder extends TreeBuilder {
                         add(new BTSequence().
                                 add(new CheckSafeJunctionsNDE()).
                                 add(new MoveTowardsTarget())).
-                        add(new GetAnyPossibleWay()));
+                        add(new MoveToAnyPossibleWay()));
     }
 }

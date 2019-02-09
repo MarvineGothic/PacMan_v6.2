@@ -1,8 +1,8 @@
 package pacman.entries.pacman.PacManControllers.BT.BTNodes;
 
-import pacman.entries.pacman.BehaviorTree.utils.Node;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 
-import static pacman.entries.pacman.PacManControllers.BT.PacManBTBuilder.activePillsIndices;
+import static pacman.entries.pacman.PacManControllers.BT.PMBTController.activePillsIndices;
 import static pacman.entries.pacman.utils.Parameters.PILLS_THRESHOLD;
 
 public class CheckPillsThreshold extends Node {

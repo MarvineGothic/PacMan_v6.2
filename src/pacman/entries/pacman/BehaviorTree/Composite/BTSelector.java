@@ -1,15 +1,13 @@
 package pacman.entries.pacman.BehaviorTree.Composite;
 
 import pacman.entries.pacman.BehaviorTree.Archetypes.Composite;
-import pacman.entries.pacman.BehaviorTree.utils.Node;
+import pacman.entries.pacman.BehaviorTree.Archetypes.Node;
 
 import static pacman.entries.pacman.BehaviorTree.TreeBuilder.runningNode;
-import static pacman.entries.pacman.BehaviorTree.utils.Node.Status.FAILURE;
-import static pacman.entries.pacman.BehaviorTree.utils.Node.Status.RUNNING;
+import static pacman.entries.pacman.BehaviorTree.Archetypes.Node.Status.FAILURE;
+import static pacman.entries.pacman.BehaviorTree.Archetypes.Node.Status.RUNNING;
 
 public class BTSelector extends Composite {
-    //public List<Node> children = new ArrayList<>();
-
 
     @Override
     public void init() {
@@ -18,7 +16,6 @@ public class BTSelector extends Composite {
 
     @Override
     public Status execute() {
-        //this.init();
         Status status = FAILURE;
         for (Node node : this.children) {
             status = node.execute();
